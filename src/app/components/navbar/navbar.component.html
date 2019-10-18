@@ -1,0 +1,58 @@
+<mat-card class="p-0 rounded-0">
+    <div class="container">
+
+        <div class="navbar navbar-expand-lg navbar-light bg-light p-0">
+            <a class="navbar-brand d-none d-sm-block" routerLink="/">
+                <img src="assets/img/logo-drk-blue.png" alt="Logo Rehman Travels">
+            </a>
+            <button class="navbar-toggler d-none d-sm-block d-lg-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" *ngFor="let item of nav; let i = index" id="navItem_{{i}}">
+                        <a *ngIf="item.ID==34" href="https://www.rehmantravel.com/pakistantours/" class="px-2 nav-link" target='_blank'>{{  item.navbarTitle | translate }}</a>
+                        <a *ngIf="!item.children && item.ID!=34" routerLink="/{{item.urlLink }}" class="px-2 nav-link">{{  item.navbarTitle | translate }}</a>
+                        <a *ngIf="item.children" href="#" class="px-2 nav-link dropdown-toggle" (click)="stopRedirecting($event, i)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ item.navbarTitle | translate }}</a>
+                        <!-- Check if Sub Childs Exists -->
+                        <div *ngIf="item.subChild" class="dropdown-menu mega-menu v-2 row z-depth-1 special-color shadow" id="dropdownMegaMenu_{{i}}" aria-labelledby="navbarDropdownMenuLink1">
+                            <div class="row mx-md-4 mx-1">
+                                <!-- Loop Through Sub Childs Array -->
+                                <div class="col-sm-4 sub-menu my-sm-4" *ngFor="let subitem of item.subChild;let j = index">
+                                    <h6 *ngIf="j==0" class="sub-title text-uppercase font-weight-bold white-text d-sm-block d-none">
+                                        {{ item.navbarTitle }}</h6>
+                                    <h6 *ngIf="j>0" class="sub-title text-uppercase font-weight-bold white-text d-sm-block d-none">
+                                        &nbsp;</h6>
+                                    <ul class="caret-style pl-0">
+                                        <!-- Sub Childs -->
+                                        <li *ngFor="let sbc of subitem;let k = index">
+                                            <a class="menu-item shadow" routerLink="/{{ sbc.urlLink }}">{{ sbc.navbarTitle }}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="mobile-sub-nav d-flex flex-row justify-content-between align-items-center mb-0 px-4 p-2 w-100 d-sm-none">
+                <li>
+                    <a routerLink="/flights">Flights</a>
+                </li>
+                <li>
+                    <a routerLink="/umrah">Umrah</a>
+                </li>
+                <li>
+                    <a routerLink="/visa">Visa</a>
+                </li>
+                <li>
+                    <a href="https://www.rehmantravel.com/pakistantours/">Tours</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</mat-card>
+<!-- Main Navigation -->

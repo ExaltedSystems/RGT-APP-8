@@ -1,0 +1,472 @@
+<app-header></app-header>
+<mat-card *ngIf="isLoading == true" class="container d-flex justify-content-center loading-container rounded-0 my-2">
+    <mat-spinner></mat-spinner>
+</mat-card>
+
+<section class="flight-search pt-0 pt-sm-2" *ngIf="isLoading == false">
+
+    <!-- current search for mobile -->
+    <!-- <div class="current-flight-search d-block d-sm-none mb-3">
+      <div class="current-search-sector row d-flex align-items-center pb-2">
+        <div class="col px-0">
+          <p>{{hotelDetails.name}}</p>
+        </div>
+      </div>
+      <p class="current-search-passenger text-center">1 Adult(s), 0 Child, 0 Infantt</p>
+      <div class="current-search-footer d-flex justify-content-between align-items-center dropdown">
+        <div class="current-search-dates d-flex align-items-center">
+          <i-calendar class="feather"></i-calendar>
+          <p class="mr-3">Apr 24, 2019</p>
+          <i-calendar class="feather"></i-calendar>
+          <p>Apr 30, 2019</p>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-sm rounded-0 shadow">Change Search</button>
+        </div>
+      </div>
+    </div> -->
+    <!-- / -->
+
+    <div class="container">
+
+        <!-- <mat-card class="custom-material-form mt-2 mb-3 rounded-0">
+        <app-hotel-search-form (searchEvent)="getSearchResults($event)"></app-hotel-search-form>
+      </mat-card> -->
+
+        <div class="row">
+            <div class="col-sm-4">
+                <mat-card class="rounded-0 mt-2 mb-3" style="background: #57a5f9;color: #fff">
+                    <h3 class="sidebar-title" style="color:#fff; border-bottom:solid 1px #fff">Your Booking Details</h3>
+                    <b>Check In</b>
+                    <p>{{checkInDate | date:'EEEE, MMMM d, y'}}</p>
+                    <b>Check Out</b>
+                    <p>{{checkOutDate | date:'EEEE, MMMM d, y'}}</p>
+                    <b>Total Nights Stay</b>
+                    <p>{{totalNights}} Nights</p>
+                    <!-- <a href="">Travelling on different dates?</a> -->
+                    <div class="list-divider"></div>
+                    <b>Your Group</b>
+                    <p>{{searchQuery['adults']}} Adults
+                        <span *ngIf="searchQuery['children'] > 0">, {{searchQuery['children']}} Children (
+              <span *ngFor="let age of searchQuery['childrenAges']; let last = last">
+                <span *ngIf="last"> and </span>{{age.childAge}}
+                        <span *ngIf="searchQuery['childrenAges'].length > 2 && !last">,</span>
+                        </span> Years Old )</span>
+                    </p>
+                    <div class="list-divider"></div>
+                    <b>You Selected</b>
+                    <div class="d-flex align-items-center justify-content-between" *ngFor="let room of selectedRooms">
+                        <p class="mb-1">{{room.roomsCount}} x {{room.room_title}}</p>
+                        <!-- <a class="remove-hotel-icon" *ngIf="selectedRooms.length > 1" (click)="removeSelectedRoom(room.id)">
+              <i></i>
+            </a> -->
+                    </div>
+                </mat-card>
+                <mat-card class="rounded-0 mt-2 mb-3" style="background: #57a5f9;color: #fff">
+                    <h3 class="sidebar-title" style="color:#fff; border-bottom:solid 1px #fff">Price</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <b>Total Price :</b>
+                        <b>{{totalPrice}}</b>
+                    </div>
+                    <small>For {{searchQuery['adults'] + searchQuery['children']}} Guests</small>
+                </mat-card>
+                <mat-card class="rounded-0 mt-2 mb-3" style="background: #57a5f9;color: #fff">
+                    <h3 class="sidebar-title" style="color:#fff; border-bottom:solid 1px #fff">Your Booking Includes</h3>
+                    <span *ngIf="hotelDetails.parking_availability == 'Yes, Free'" class="badge badge-success mr-1">Free Parking</span>
+                    <span *ngIf="hotelDetails.internet_availability == 'Yes, Free'" class="badge badge-success mr-1">Free Internet</span>
+                    <span *ngIf="hotelDetails.breakfast == 'Yes, Included in Price'" class="badge badge-success mr-1">Free Breakfast</span>
+                    <span *ngIf="hotelDetails.parking_location == 'On Site'" class="badge badge-info mr-1">On Site Parking</span>
+                    <span *ngIf="hotelDetails.internet_type == 'Wifi'" class="badge badge-info mr-1">WiFi</span>
+                </mat-card>
+            </div>
+            <div class="col-sm-8">
+                <mat-card class="rounded-0 mt-2 mb-3">
+                    <div class="row mb-4 hotel-search-item">
+                        <div class="col-sm-4">
+                            <!-- gallary -->
+                            <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+                        </div>
+                        <div class="col-sm-8 pl-sm-0">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <h5 class="hotel-name mt-0 mb-1">{{hotelDetails.name}}</h5>
+                                    <div class="d-flex align-items-center">
+                                        <i class="property-type">{{hotelDetails.prperty_name}}</i>
+                                        <div class="mx-2">|</div>
+                                        <div class="star-rating d-flex align-items-center" *ngFor="let item of createRange(hotelDetails.star_rating); let index">
+                                            <i class="feather active material-icons">star_border</i>
+                                        </div>
+                                        <div class="mx-2">|</div>
+                                        <div class="map-view d-flex align-items-center">
+                                            <!-- <i-map class="hotel-feather-icon"></i-map> -->
+                                            <a class="pl-1" href=""> View On Map</a>
+                                        </div>
+                                    </div>
+                                    <div class="address d-flex align-items-center my-1">
+                                        <i class="hotel-feather-icon material-icons">room</i>
+                                        <p class="ml-1">{{hotelDetails.address}}</p>
+                                    </div>
+                                    <div class="cancellation d-flex align-items-center text-success my-1">
+                                        <i class="success hotel-feather-icon material-icons">done</i>
+                                        <p class="ml-1">Free Cancellation</p>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-sm-4">
+                  <div class="hotel-price p-2 d-flex flex-column justify-content-between">
+                    <div class="reviews">
+                      <strong class="d-block">Excellent</strong>
+                      <small>7 Reviews</small>
+                    </div>
+                  </div>
+                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-divider"></div>
+
+                    <p class="d-block d-sm-flex align-items-center">
+                        <i class="hotel-feather-icon mr-1">person_outline</i>
+                        <a href="">Sign in</a>&nbsp;to book with your saved details or&nbsp;
+                        <a href="">register</a>&nbsp;to manage your bookings on the go!
+                    </p>
+
+                    <mat-horizontal-stepper [linear]="isLinear" #stepper>
+                        <mat-step [stepControl]="bookingInfoFrom" [editable]="true">
+                            <form [formGroup]="bookingInfoFrom" (submit)="guestInfo(bookingInfoFrom.value)" class="custom-material-form">
+                                <ng-template matStepLabel>Enter Your Details</ng-template>
+                                <div class="form-group row" #paxInfoForm>
+                                    <div class="col-sm-2">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input material-select rounded-0">
+                                            <mat-label>Title</mat-label>
+                                            <mat-select formControlName="title">
+                                                <mat-option selected value="Mr">Mr</mat-option>
+                                                <mat-option value="Mrs">Mrs</mat-option>
+                                                <mat-option value="Miss">Miss</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="firstName" placeholder="First Name" mask="S*" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.bookingInfoFrom.get('firstName').value" (click)="this.bookingInfoFrom.get('firstName').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="bookingInfoFrom.controls['firstName'].hasError('required') && bookingInfoFrom.controls['firstName'].touched">
+                                            First Name is required.
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="lastName" placeholder="Last Name" mask="S*" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.bookingInfoFrom.get('lastName').value" (click)="this.bookingInfoFrom.get('lastName').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="bookingInfoFrom.controls['lastName'].hasError('required') && bookingInfoFrom.controls['lastName'].touched">
+                                            Last Name is required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="phone" placeholder="Phone No" minlength="10" maxlength="19" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.bookingInfoFrom.get('phone').value" (click)="this.bookingInfoFrom.get('phone').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="bookingInfoFrom.controls['phone'].hasError('required') && bookingInfoFrom.controls['phone'].touched">
+                                            Phone Number is required.
+                                        </div>
+                                        <div class="form-error" *ngIf="bookingInfoFrom.controls['phone'].errors?.minlength">
+                                            Minimum 10 characters.
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input type="email" matInput formControlName="email" placeholder="Email" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.bookingInfoFrom.get('email').value" (click)="this.bookingInfoFrom.get('email').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="bookingInfoFrom.controls['email'].hasError('required') && bookingInfoFrom.controls['email'].touched">
+                                            Email address required.
+                                        </div>
+                                        <div class="form-error" *ngIf="bookingInfoFrom.controls['email'].invalid && bookingInfoFrom.controls['email'].value != ''">
+                                            Email address not valid.
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-sm-4">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="confirmEmail" placeholder="Confirm Email" class="">
+                                        </mat-form-field>
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <b class="d-block mb-2">Who are you booking for?</b>
+                                        <mat-radio-group aria-label="Select an option" formControlName="bookingFor">
+                                            <mat-radio-button class="d-block" value="1">I am the main guest</mat-radio-button>
+                                            <mat-radio-button class="d-block" value="2">Booking is for someone else</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div>
+                                    <span class="form-error ml-3" *ngIf="bookingInfoFrom.controls['bookingFor'].hasError('required') && bookingInfoFrom.controls['bookingFor'].touched ">  
+                      Please select an option 
+                      </span>
+                                </div>
+                                <div class="selected-room light-grey-bg p-3 mb-3 position-relative" *ngFor="let room of selectedRooms">
+                                    <!-- <a class="remove-hotel-icon" *ngIf="selectedRooms.length > 1" (click)="removeSelectedRoom(room.id)">
+                    <i></i>
+                  </a> -->
+                                    <p class="mb-1">
+                                        <b>{{room.room_title}}</b>
+                                    </p>
+                                    <!-- <small>Can I cancel? When do I pay?</small> -->
+                                    <div class="form-group row d-flex align-items-center my-2">
+                                        <label class="col-sm-1 m-0">Guests</label>
+                                        <div class="col-sm-2">
+                                            <select class="form-control rounded-0">
+                        <option *ngFor="let item of createRange(room.no_of_guest);  let last = last" [attr.selected]="last" [value]="item">{{item}}</option>
+                      </select>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p>
+                                                <b>Smoking:</b> {{room.smooking_policy}}</p>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="list-divider"></div>
+                  <div class="form-group row mb-0">
+                    <div class="col-sm-5">
+                      <label for="">Full Guest Name</label>
+                      <input type="text" class="form-control">
+                    </div>
+                  </div> -->
+
+                                </div>
+
+                                <!-- <div class="form-group">
+                                    <mat-checkbox class="d-block" formControlName="rentACar">
+                                        I'm interested in renting a car
+                                    </mat-checkbox>
+                                    <small> Make the most out of your trip and check car hire options in your booking confirmation</small>
+                                </div> -->
+                                <div>
+                                    <button type="submit" matStepperNext class="btn btn-success rounded-0 shadow-sm px-4 btn-block" (click)="scroll(paxInfoForm)">Next</button>
+                                    <small class="form-error" *ngIf="bookingInfoFrom.invalid">{{bookingErrorMsg}}</small>
+                                </div>
+                            </form>
+                        </mat-step>
+                        <mat-step [stepControl]="paymentInfoForm" [editable]="true">
+                            <form [formGroup]="paymentInfoForm" (submit)="paymentInfo(paymentInfoForm.value)" class="custom-material-form">
+                                <ng-template matStepLabel>Payment Details</ng-template>
+                                <div class="form-group row">
+                                    <!-- <div class="col-sm-12">
+                    <mat-radio-group aria-label="Select an option" formControlName="cardType">
+                      <mat-radio-button value="1" class="mr-4">Master</mat-radio-button>
+                      <mat-radio-button value="2">Visa</mat-radio-button>
+                    </mat-radio-group>
+                  </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="cardNumber" minlength="12" maxlength="20" mask="9*" placeholder="Card Number" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('cardNumber').value" (click)="this.paymentInfoForm.get('cardNumber').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['cardNumber'].hasError('required') && paymentInfoForm.controls['cardNumber'].touched">
+                                            Credit Card Number is required.
+                                        </div>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['cardNumber'].errors?.minlength">
+                                            Minimum 12 characters.
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="cvn" placeholder="CVN" mask="999" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('cvn').value" (click)="this.paymentInfoForm.get('cvn').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['cvn'].hasError('required') && paymentInfoForm.controls['cvn'].touched">
+                                            CVN required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="cardHolderFirstName" mask="S*" placeholder="Card Holder First Name" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('cardHolderFirstName').value" (click)="this.paymentInfoForm.get('cardHolderFirstName').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['cardHolderFirstName'].hasError('required') && paymentInfoForm.controls['cardHolderFirstName'].touched">
+                                            First Name is required.
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="cardHolderLastName" mask="S*" placeholder="Card Holder Last Name" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('cardHolderLastName').value" (click)="this.paymentInfoForm.get('cardHolderLastName').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['cardHolderLastName'].hasError('required') && paymentInfoForm.controls['cardHolderLastName'].touched">
+                                            Last Name is required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="form-control  mb-3 mb-sm-0 material-input rounded-0">
+                                            <mat-select formControlName='expiryYear' placeholder="Expiry Year" (selectionChange)="populateMonths($event.value)">
+                                                <mat-option *ngFor="let year of yearItems" value="{{year.value}}">{{year.value}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="form-control  mb-3 mb-sm-0 material-input rounded-0">
+                                            <mat-select formControlName='expiryMonth' placeholder="Expiry Month">
+                                                <mat-option *ngFor="let month of monthItems" value="{{month.value}}">{{month.name}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="email" placeholder="Email" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('email').value" (click)="this.paymentInfoForm.get('email').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['email'].hasError('required') && paymentInfoForm.controls['email'].touched">
+                                            Email is required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-3">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="phone" placeholder="Phone" minlength="10" maxlength="19" autocomplete="off">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('phone').value" (click)="this.paymentInfoForm.get('phone').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['phone'].hasError('required') && paymentInfoForm.controls['phone'].touched">
+                                            Phone is required.
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <mat-form-field class="form-control mb-3 mb-sm-0 material-input rounded-0">
+                                            <input matInput formControlName="address" placeholder="Address">
+                                            <i class="material-icons" *ngIf="this.paymentInfoForm.get('address').value" (click)="this.paymentInfoForm.get('address').setValue('')">highlight_off</i>
+                                        </mat-form-field>
+                                        <div class="form-error" *ngIf="paymentInfoForm.controls['address'].hasError('required') && paymentInfoForm.controls['address'].touched">
+                                            Address is required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button matStepperPrevious class="btn btn-default rounded-0 shadow-sm mr-2 btn-block">Back</button>
+                                    <button type="submit" matStepperNext class="btn btn-success rounded-0 shadow-sm mt-0 btn-block">Next</button>
+                                </div>
+                                <small class="form-error" *ngIf="paymentInfoForm.invalid">{{paymentErrorMsg}}</small>
+                            </form>
+
+                        </mat-step>
+                        <mat-step>
+                            <ng-template matStepLabel>Review Your Booking</ng-template>
+                            <h4 class="text-center">Review Your Booking</h4>
+                            <table class="table" *ngIf="bookingComplete == true">
+                                <tr>
+                                    <td>Hotel</td>
+                                    <td>
+                                        <b>{{hotelDetails.name}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Check In</td>
+                                    <td>
+                                        <b>{{checkInDate | date:'EEEE, MMMM d, y'}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Check Out</td>
+                                    <td>
+                                        <b>{{checkOutDate | date:'EEEE, MMMM d, y'}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Total Nights</td>
+                                    <td>
+                                        <b>{{totalNights}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Guests</td>
+                                    <td>
+                                        <b>{{searchQuery['adults']}} Adults
+                      <span *ngIf="searchQuery['children'] > 0">, {{searchQuery['children']}} Children (
+                        <span *ngFor="let age of searchQuery['childrenAges']; let last = last">
+                          <span *ngIf="last"> and </span>{{age.childAge}}
+                          <span *ngIf="searchQuery['childrenAges'].length > 2 && !last">,</span>
+                        </span> Years Old )</span>
+                    </b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Total Price (PKR)</td>
+                                    <td>
+                                        <b>{{totalPrice}}/-</b>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Rooms</td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-between" *ngFor="let room of selectedRooms">
+                                            <p class="mb-1">{{room.roomsCount}} x {{room.room_title}}</p>
+                                            <!-- <a class="remove-hotel-icon" *ngIf="selectedRooms.length > 1" (click)="removeSelectedRoom(room.id)">
+                        <i></i>
+                      </a> -->
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>Full Guest Name</td>
+                                    <td>
+                                        <b>{{guestFormInfo.firstName}} {{guestFormInfo.lastName}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Email Address</td>
+                                    <td>
+                                        <b>{{guestFormInfo.email}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Phone No</td>
+                                    <td>
+                                        <b>{{paymentFormInfo.phone}}</b>
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>Card Type</td>
+                                    <td>
+                                        <b *ngIf="paymentFormInfo.cardType == 1">Master</b>
+                                        <b *ngIf="paymentFormInfo.cardType == 2">Visa</b>
+                                    </td>
+                                </tr> -->
+                                <tr>
+                                    <td>Card Holder Name</td>
+                                    <td>
+                                        <b>{{paymentFormInfo.cardHolderFirstName}} {{paymentFormInfo.cardHolderLastName}}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td>
+                                        <b>{{paymentFormInfo.address}}</b>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div>
+                                <button class="btn btn-default rounded-0 shadow-sm mr-2" matStepperPrevious>Back</button>
+                                <button class="btn btn-default rounded-0 shadow-sm mr-2" (click)="stepper.reset()">Reset</button>
+                                <button class="btn btn-success rounded-0 shadow-sm mr-2 w-40" style="width:25%" (click)="conformBooking()">Confirm Booking</button>
+                            </div>
+                        </mat-step>
+                    </mat-horizontal-stepper>
+                </mat-card>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<app-footer></app-footer>

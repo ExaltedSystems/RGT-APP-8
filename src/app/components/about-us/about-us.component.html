@@ -1,0 +1,101 @@
+<app-header></app-header>
+<div>
+    <img class="img-fluid" src="{{(page_info && page_info.image != null) ? baseUrl+'rgtapp/uploads/cms/pages/'+page_info.image : 'assets/img/visa-background-image.jpg'}}">
+</div>
+<section class="visa-contents">
+    <div class="container sidebar">
+        <div class="section-title" *ngIf="page_info">
+            <h1>{{ page_info.name }}</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 order-last order-sm-first">
+                <div class="sidebar-list">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+            </div>
+            <div class="col-sm-9 order-sm-2 ng-star-inserted" *ngIf="page_info && !isBank">
+                <div [innerHTML]="page_info.description"></div>
+                <iframe src="doc/profile-book-version-02April.pdf" width="100%" height="1000" frameborder="0"></iframe>
+                <p>&nbsp;</p>
+                <div class="main-container-callback">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <p>&nbsp;</p>
+                <app-related-links></app-related-links>
+            </div>
+            <div class="col-sm-9 order-sm-2 ng-star-inserted" *ngIf="bankDetails">
+                <div class="card-deck">
+                    <div class="col-sm-6" *ngFor="let b of bankDetails;let i=index">
+                        <div class="row well well-sm">
+                            <div class="col-sm-4 col-4"><img src="assets/banks-logos/{{b.logo}}" class="width-100" alt="{{b.name}} Logo Rehman Travels"></div>
+                            <div class="col-sm-8 col-8">
+                                <h3>{{b.name}}</h3>
+                                <small class="inline-block">TITLE : {{b.title}}</small><br>
+                                <small class="inline-block">BRANCH CODE : {{b.branchCode}}</small><br>
+                                <small class="inline-block">ACCOUNT # : <b>{{b.accNumber}}</b></small><br>
+                            </div>
+                            <p class="visa-price" *ngIf="b.ibanNumber">IBAN #: {{ b.ibanNumber }}</p>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="main-container-callback d-none d-sm-block">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <p>&nbsp;</p>
+                <app-related-links></app-related-links>
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer></app-footer><app-header></app-header>
+<div>
+    <img class="img-fluid" src="{{(page_info && page_info.image != null) ? baseUrl+'rgtapp/uploads/cms/pages/'+page_info.image : 'assets/img/visa-background-image.jpg'}}">
+</div>
+<section class="visa-contents">
+    <div class="container sidebar">
+        <div class="section-title" *ngIf="page_info">
+            <h1>{{ page_info.name }}</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 order-last order-sm-first">
+                <div class="sidebar-list">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+            </div>
+            <div class="col-sm-9 order-sm-2 ng-star-inserted" *ngIf="page_info && !isBank">
+                <div [innerHTML]="page_info.description"></div>
+                <iframe src="doc/profile-book-version-02April.pdf" width="100%" height="1000" frameborder="0"></iframe>
+                <p>&nbsp;</p>
+                <div class="main-container-callback">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <p>&nbsp;</p>
+                <app-related-links></app-related-links>
+            </div>
+            <div class="col-sm-9 order-sm-2 ng-star-inserted" *ngIf="bankDetails">
+                <div class="card-deck">
+                    <div class="col-sm-6" *ngFor="let b of bankDetails;let i=index">
+                        <div class="row well well-sm">
+                            <div class="col-sm-4 col-4"><img src="assets/banks-logos/{{b.logo}}" class="width-100" alt="{{b.name}} Logo Rehman Travels"></div>
+                            <div class="col-sm-8 col-8">
+                                <h3>{{b.name}}</h3>
+                                <small class="inline-block">TITLE : {{b.title}}</small><br>
+                                <small class="inline-block">BRANCH CODE : {{b.branchCode}}</small><br>
+                                <small class="inline-block">ACCOUNT # : <b>{{b.accNumber}}</b></small><br>
+                            </div>
+                            <p class="visa-price" *ngIf="b.ibanNumber">IBAN #: {{ b.ibanNumber }}</p>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="main-container-callback d-none d-sm-block">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <p>&nbsp;</p>
+                <app-related-links></app-related-links>
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer></app-footer>

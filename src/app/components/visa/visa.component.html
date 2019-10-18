@@ -1,0 +1,121 @@
+<app-header></app-header>
+<div *ngIf="page_info && page_info.countryBanner != null">
+    <img class="img-fluid" src="{{baseUrl+'rgtapp/uploads/cms/visas/'+page_info.countryBanner}}">
+</div>
+<div *ngIf="page_info && page_info.pageDetails && page_info.pageDetails.image != null">
+    <img class="img-fluid" src="{{baseUrl+'rgtapp/uploads/cms/pages/'+page_info.pageDetails.image}}">
+</div>
+<section class="visa-contents" style="padding: 5px">
+    <div class="container sidebar">
+        <div class="section-title" *ngIf="page_info">
+            <h1>{{ page_info.countryName }}</h1>
+        </div>
+        <!-- <div class="section-title">
+        <h1>visit visa</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</p>
+      </div>-->
+        <div class="row">
+            <div class="col-sm-3 order-last order-sm-first">
+                <div class="sidebar-list">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <app-amazing-visa-offer></app-amazing-visa-offer>
+                <!-- <div class="sidebar-list mt-4" *ngIf="popularVisa">
+                    <h3 class="sidebar-title">Amazing Visa Offers</h3>
+                    <ul>
+                        <li *ngFor="let item of popularVisa;"><a routerLink="/{{ item.visaUrl }}">{{ item.countryName }}
+								<span class="float-right">{{item.durationId}}</span></a></li>
+                    </ul>
+                    <a routerLink="/visa" class="view-all">View All</a>
+                </div> -->
+                <!-- <div class="sidebar-subscribe mt-4">
+                    <p class="mb-0">Subscribe to Get Amazing Offers</p>
+                    <h3>Tour Alerts</h3>
+                    <button class="btn btn-secondary">Subscribe</button>
+                </div> -->
+            </div>
+            <div class="col-sm-9 order-sm-2" *ngIf="page_info">
+                <!-- <h1>{{ page_info.countryName }}</h1> -->
+                <!-- <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a routerLink="/">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a routerLink="/visa">Visa</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{ page_info.countryName }}</li>
+                    </ol>
+                </nav> -->
+                <!--listing start-->
+                <div class="row card-deck">
+                    <div class="col-sm-4" *ngFor="let item of page_info.visaDetails; let i=index;">
+                        <!-- <div class="visa-type-card mx-0 card shadow mb-4">
+                            <div class="duration d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0">{{ item.durationId }}</h5>
+                                <small>{{ item.numEntries }}</small>
+                            </div>
+                            <div class="visa-type-price d-flex bd-highlight align-items-stretch justify-content-between">
+                                <div class="visa-type text-center w-100">{{ item.visaTypeId }}</div>
+                                <div class="visa-card-price text-center w-100">
+                                    <p class="mb-0">{{ item.currencyCode }} {{ item.visaPrice }}
+                                        <small class="d-block text-center">Per Person</small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="visa-includes pt-0">
+                                <h5>Includes</h5>
+                                <ul>
+                                    <li *ngFor="let inc of item.visaIncludes">{{ inc.item_text }}</li>
+                                </ul>
+
+                            </div>
+                        </div> -->
+                        <!-- New Design Start -->
+                        <span class="visa-duration">{{ item.durationId | slice:0:12 }}</span>
+                        <div class="visa-type-card mx-0 card shadow mb-4 text-center">
+                            <div>
+                                <h3 [attr.class]="item.visaTypeId.length > 17 ? 'visa-type-h3' : ''">{{ item.visaTypeId }}</h3>
+                                <small>{{ item.numEntries }}</small>
+                            </div>
+                            <div class="visa-price-pp text-center w-100">{{ item.currencyCode }} {{ item.visaPrice }} /-
+                                <small class="text-center">Per Person</small>
+                            </div>
+                            <!-- <div class="duration d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0">{{ item.durationId }}</h5>
+                                <small>{{ item.numEntries }}</small>
+                            </div>
+                            <div class="visa-type-price d-flex bd-highlight align-items-stretch justify-content-between">
+                                <div class="visa-type text-center w-100">{{ item.visaTypeId }}</div>
+                                <div class="visa-card-price text-center w-100">
+                                    <p class="mb-0">{{ item.currencyCode }} {{ item.visaPrice }}
+                                        <small class="d-block text-center">Per Person</small>
+                                    </p>
+                                </div>
+                            </div> -->
+                            <div class="visa-includes pt-0 text-left">
+                                <h5>INCLUDES</h5>
+                                <ul>
+                                    <li *ngFor="let inc of item.visaIncludes | slice:0:5"><i class="fa fa-check-circle text-primary"></i> {{ inc.item_text }}</li>
+                                </ul>
+                                <!-- <p *ngFor="let inc of item.visaIncludes"><i class="fa fa-check-circle text-primary"></i> {{ inc.item_text }}</p> -->
+                            </div>
+                        </div>
+                        <!-- New Design End -->
+                    </div>
+                </div>
+                <!--listing end-->
+                <div class="ck-editor-data" [innerHTML]="page_info.details | safeHtml"></div>
+                <!-- <div class="ck-editor-data">{{page_info.details}}</div> -->
+                <p>&nbsp;</p>
+                <div class="main-container-callback d-none d-sm-block">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <p>&nbsp;</p>
+                <app-related-links></app-related-links>
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer></app-footer>

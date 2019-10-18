@@ -1,0 +1,32 @@
+<app-header></app-header>
+<div class="banner d-flex align-items-center">
+    <img src="{{(page_info && page_info.image != null) ? baseUrl+'rgtapp/uploads/cms/pages/'+page_info.image : 'assets/img/flights-page.jpg'}}" class="img-fluid d-none d-sm-inline-block">
+    <div class="page-search">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <mat-card class="main-search-form p-3 mat-card mat-card mt-3 pt-3" style="background: rgba(255,255,255,.7)">
+                        <h3 class="text-primary text-center">Find Best Hotel Deals</h3>
+                        <app-hotel-search-form></app-hotel-search-form>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="about-section">
+    <div class="container">
+        <div class="section-title">
+            <h1>{{ page_info.name }}</h1>
+        </div>
+        <div [innerHTML]="page_info.description"></div>
+        <app-popular-airlines-and-hotels></app-popular-airlines-and-hotels>
+        <p>&nbsp;</p>
+        <div class="main-container-callback d-none d-sm-block">
+            <app-request-callback-form></app-request-callback-form>
+        </div>
+        <p>&nbsp;</p>
+        <app-related-links></app-related-links>
+    </div>
+</section>
+<app-footer></app-footer>

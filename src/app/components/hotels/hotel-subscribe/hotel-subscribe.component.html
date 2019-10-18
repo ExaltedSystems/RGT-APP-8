@@ -1,0 +1,22 @@
+<div class="container">
+    <form class="main-search-form position-relative" [formGroup]="hotelSubscribeForm" (ngSubmit)="subscribeNow(hotelSubscribeForm.value)">
+        <div class="form-group row">
+            <mat-form-field class="form-control material-input mb-3 shadow">
+                <input matInput placeholder="Email" class="rounded-5" formControlName="email" matInput required>
+                <i class="feather-x-circle material-icons" *ngIf="this.hotelSubscribeForm.get('email').value" (click)="this.hotelSubscribeForm.get('email').setValue('');this.subscriberSuccessMsg = '';this.subscriberErrorMsg = ''">highlight_off</i>
+            </mat-form-field>
+            <div class="form-error" *ngIf="hotelSubscribeForm.controls['email'].hasError('required') && hotelSubscribeForm.controls['email'].touched">
+                Email address required.
+            </div>
+            <div class="form-error" *ngIf="hotelSubscribeForm.controls['email'].invalid && hotelSubscribeForm.controls['email'].value != ''">
+                Email address not valid.
+            </div>
+        </div>
+        <div class="form-group row">
+            <button class="btn btn-primary btn-lg btn-block shadow rounded-2 hotel-btn" [disabled]="!hotelSubscribeForm.valid" type="submit">Subscribe</button>
+        </div>
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoad"></mat-progress-bar>
+        <p *ngIf="subscriberSuccessMsg" class="form-success">{{subscriberSuccessMsg}}</p>
+        <p *ngIf="subscriberErrorMsg" class="form-error">{{subscriberErrorMsg}}</p>
+    </form>
+</div>

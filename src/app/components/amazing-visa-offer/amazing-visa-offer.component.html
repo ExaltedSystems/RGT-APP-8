@@ -1,0 +1,20 @@
+<div class="sidebar-list mt-4">
+    <a routerLink="/flights"><button class="button button2">Book Your
+            Flight <span class="fa fa-plane"></span></button></a>
+    <a routerLink="/hotels"><button class="button button3">Book Your
+            Hotel <span class="fa fa-hotel"></span></button></a>
+    <a href="https://www.rehmantravel.com/tours/" target="_blank"><button class="button">Pakistan Tour
+            <span class="fa fa-bus"></span></button></a>
+</div>
+<div class="sidebar-list mt-4" *ngIf="allVisas">
+    <h3 class="sidebar-title">Amazing Visa Offers</h3>
+    <ul class="flag-list">
+        <li *ngFor="let item of allVisas">
+            <a routerLink="/{{ item.visaUrl }}">
+                <img src="{{ baseUrl+'rgtapp/assets/flags/'+(item.countryName.split(' ').join('-') | lowercase)+'-flag.png' }}">
+                <p class="mt-2">{{item.visaTitle | titlecase}}</p>
+                <p class="float-right mt-2">{{item.durationId | slice:0:12}}</p>
+            </a>
+        </li>
+    </ul>
+</div>

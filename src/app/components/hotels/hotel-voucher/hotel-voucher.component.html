@@ -1,0 +1,209 @@
+<app-header></app-header>
+<mat-card *ngIf="isLoading == true" class="container d-flex justify-content-center rounded-0 my-2">
+    <mat-spinner></mat-spinner>
+</mat-card>
+
+<section class="flight-search pt-0 pt-sm-2">
+    <div class="container">
+        <mat-card class="rounded-0 mt-2 mb-3">
+            <div id="invoice" *ngIf="bookingDetails">
+
+                <div class="toolbar hidden-print">
+                    <div class="text-right">
+                        <!-- <button id="printInvoice" (click)="captureScreen('booking_preview')" class="btn btn-warning mr-2"><i class="fa fa-file-pdf-o"></i> Download PDF</button> -->
+                        <button id="printInvoice" (click)="printVoucher('booking_preview')" class="btn btn-info"><i class="fa fa-print"></i> Print</button>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="booking-preview" id="booking_preview">
+                    <div class="row">
+                        <div class="col-sm-1 text-center">
+                            <i class="text-success no-print material-icons"></i>
+                        </div>
+                        <div class="col-sm-11">
+                            <p class="m-0">Thanks, {{bookingDetails['firstName']}} {{bookingDetails['lastName']}}</p>
+                            <h3 class="my-1 {{bookingDetails['bookingStatus']}}">
+                                Your booking in {{bookingDetails['city']}} is {{bookingDetails['bookingStatus']}}.
+                            </h3>
+                            <p><b>{{bookingDetails['hotelDetail'].name}}</b> is expecting you on
+                                <b>{{bookingDetails['checkInDate'] | date: 'mediumDate'}}</b> </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1 text-center">
+                            <i class="text-success no-print material-icons"></i>
+                        </div>
+                        <div class="col-sm-11">
+                            <p class="m-0">Your payment will be handled by {{bookingDetails['hotelDetail'].name}}. The "Payment" section below has more details</p>
+                            <p class="m-0">
+                                Make changes to your booking or ask the property a question in just a few clicks
+                            </p>
+                        </div>
+                    </div>
+                    <!-- <div class="d-flex justify-content-center my-5">
+                        <button class="btn btn-primary rounded-0 p-3 mr-2">Make changes to your booking </button>
+                        <button class="btn btn-default rounded-0 p-3">Manage your booking in the app </button>
+                    </div> -->
+                    <div>
+                        <h3 class="my-2">
+                            <a href="">{{bookingDetails['hotelDetail'].name}}</a>
+                        </h3>
+                        <p class="m-0">{{bookingDetails['hotelDetail'].address}}</p>
+                        <p class="m-0"><b>Phone:</b> {{bookingDetails['hotelDetail'].phone_no}}</p>
+                        <!-- <a href="">Email property</a> -->
+                    </div>
+                    <div class="text-center">
+                        <img src="" alt="">
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td width="30%"><b>Your reservation</b></td>
+                            <td>{{bookingDetails['totalNights']}} Night(s), {{bookingDetails['totalRooms']}} room(s)</td>
+                        </tr>
+                        <tr>
+                            <td><b>Check-in</b></td>
+                            <td>{{bookingDetails['checkInDate'] | date : 'longDate'}} (from {{bookingDetails['hotelDetail'].checkin_from | slice:0:5}})</td>
+                        </tr>
+                        <tr>
+                            <td><b>Check-out</b></td>
+                            <td>{{bookingDetails['checkOutDate'] | date : 'longDate'}} (until {{bookingDetails['hotelDetail'].checkout_to | slice:0:5}})</td>
+                        </tr>
+                        <tr>
+                            <td><b>Prepayment</b></td>
+                            <td>You don’t have to pre-pay, but the property might take a deposit from the card you booked with. This is a routine procedure to verify the card is valid and hasn't been lost or stolen. The charge is temporary and will be returned
+                                to you in full.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Cancellation cost</b></td>
+                            <td><span class="">Guests won't be charged anything if they cancel
+                                    {{bookingDetails['hotelDetail'].cancellation_days}} day before check-in,
+                                    otherwise they will pay for the
+                                    {{bookingDetails['hotelDetail'].cancellation_charges.replace('_', " ")}}
+                                </span></td>
+                        </tr>
+                    </table>
+                    <div class="text-center no-print" *ngIf="bookingDetails['bookingStatus'] != 'Cancelled'">
+                        <button class="btn btn-danger rounded-0 p-3 mr-2" type="button" (click)="cancelBooking();">Cancel Booking</button>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2">
+                            <div class="price-info-desc mt-5" style="background:#ccc">
+                                <table class="table">
+                                    <tr *ngFor="let room of bookingDetails['rooms'];">
+                                        <td><b>{{room.name}}</b></td>
+                                        <td align="right"><b>PKR {{room.roomPrice}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4 class="m-0">Price</h4>
+                                        </td>
+                                        <td align="right">
+                                            <h4 class="m-0">PKR {{bookingDetails['totalCharges']}}</h4>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="mt-3 p-4">
+                                    You'll pay when you stay at {{bookingDetails['hotelDetail'].name}} As a standard procedure, the property might charge a temporary deposit to make sure the card used to book isn't lost or stolen and to guarantee your booking. You'll pay the hotel in the hotel’s
+                                    local currency (PKR) at the exchange rate on day of payment. 16 % TAX is {{bookingDetails['hotelDetail'].payment_methods.payment_form.default_tax ? 'include' : 'exclude'}}. {{bookingDetails['hotelDetail'].extra_bed == 'No'
+                                    ? 'Please note: additional supplements (e.g. extra bed) are not added to this total' : ''}}. The total price shown is the amount you'll pay to the property. Rehmantravel.com doesn't charge any reservation, administration,
+                                    or other fees. If you don't show up or cancel, applicable taxes may still be charged by the property.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2">
+                            <h3 class="my-1">
+                                Room Details
+                            </h3>
+                            <table class="table" *ngFor="let room of bookingDetails['rooms']">
+                                <tr>
+                                    <td colspan="2"><b>{{room.name}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td width="30%"><b>Number of guests</b></td>
+                                    <td>max. {{room.roomGuests}} people.</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Breakfast</b></td>
+                                    <td>Breakfast is {{bookingDetails['breakfast'] == "No" ? 'not included' : 'included'}} in the final price</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2">
+                            <h3 class="my-1">
+                                Booking Conditions
+                            </h3>
+                            <table class="table">
+                                <tr>
+                                    <td><b>Cancellation policy</b></td>
+                                    <td>
+                                        <p>You'll be charged the first night if you cancel your booking. If you don’t show up you will be charged the total price.</p>
+                                        <p>Any cancellation or modification fees are determined by the property. Additional costs will be paid to the property.</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Guest parking</b></td>
+                                    <td>
+                                        <span *ngIf="bookingDetails['hotelDetail'].parking_availability == 'Yes, Free'" class="d-block">
+                                            Free {{bookingDetails['hotelDetail'].parking_type}}
+                                            {{bookingDetails['hotelDetail'].parking_location}} Parking Available.
+                                            {{bookingDetails['hotelDetail'].parking_reservation}}</span>
+                                        <span *ngIf="bookingDetails['hotelDetail'].parking_availability == 'Yes, Paid'" class="d-block">
+                                            {{bookingDetails['hotelDetail'].parking_type}}
+                                            {{bookingDetails['hotelDetail'].parking_location}} Parking Available.
+                                            {{bookingDetails['hotelDetail'].parking_reservation}}</span>
+                                        <span *ngIf="bookingDetails['hotelDetail'].parking_availability == 'No'" class="d-block">
+                                            No Parking Available</span>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Internet</b></td>
+                                    <td><span [ngSwitch]="bookingDetails['hotelDetail'].internet_availability">
+                                            <span *ngSwitchCase="'Yes, Paid'"
+                                                class="badge badge-info mr-1">Internet</span>
+                                        <span *ngSwitchCase="'Yes, Free'" class="badge badge-success mr-1">Free
+                                                Internet</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2">
+                            <h3 class="my-1">
+                                Payment
+                            </h3>
+                            <p>
+                                You have now confirmed and guaranteed your reservation by credit card.
+                            </p>
+                            <p>
+                                All payments are to be made at the property during your stay, unless otherwise stated in the <a>policies</a>.
+                            </p>
+                            <span *ngIf="bookingDetails['hotelDetail'].payment_methods.payment_form.is_credit_card == 'yes'">
+                                <p><b>This property accepts the following forms of payment:</b></p>
+                                <span *ngIf="bookingDetails['hotelDetail'].payment_methods.payment_form.master == true" class="mr-2">
+                                        <img src="assets/img/icons/master.png" alt=""> Master</span>
+                            <span *ngIf="bookingDetails['hotelDetail'].payment_methods.payment_form.visa == true" class="mr-2">
+                                        <img src="assets/img/icons/visa.png" alt=""> Visa</span>
+                            <span *ngIf="bookingDetails['hotelDetail'].payment_methods.payment_form.amx == true" class="mr-2">
+                                        <img src="assets/img/icons/amx.png" alt=""> American Express</span>
+                            <span *ngIf="bookingDetails['hotelDetail'].payment_methods.payment_form.mestro == true" class="mr-2">
+                                        <img src="assets/img/icons/maestro.png" alt=""> Mestro</span>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</section>
+<app-footer></app-footer>

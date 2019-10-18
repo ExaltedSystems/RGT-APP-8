@@ -1,0 +1,1168 @@
+<mat-drawer-container class="mat-drawer-container mat-drawer-transition">
+    <mat-drawer #filterForm class="mat-drawer">
+        <div class="sidebar-list">
+            <h3 class="sidebar-title">Filter Your Search
+                <i class="material-icons pull-right" (click)="filterForm.close()">highlight_off</i>
+            </h3>
+            <div *ngIf="responseAirlinesUnique.length > 0">
+                <h3 class="sidebar-title">By AirLine</h3>
+                <ul class="list-style-none p-0 stop-filter" *ngIf="stopFilteritems.length > 0">
+                    <li *ngFor="let eachAirLine of responseAirlinesUnique">
+                        <mat-checkbox (change)="airlineFilters($event, 'airline', 'm')" value="{{eachAirLine.value}}" class="mat-checkbox">
+                            <img src="AirlineLogos/{{eachAirLine.value}}.png" alt="{{eachAirLine.text}}" width="30"> {{eachAirLine.text}} </mat-checkbox>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer #searchForm class="mat-drawer" position="end">
+        <h3 class="sidebar-title mb-3">Change Your Search
+            <i class="material-icons pull-right" (click)="searchForm.close()">highlight_off</i>
+        </h3>
+        <app-flights-search [sideForm]="sideForm"></app-flights-search>
+    </mat-drawer>
+    <mat-drawer #fareDetailsPopup class="mat-drawer" position="start">
+        <h3 class="sidebar-title">
+            Fare Details
+            <i class="material-icons popup-clr-btn pull-right" (click)="fareDetailsPopup.close();">highlight_off</i>
+        </h3>
+        <div class="flight-segment-details" *ngIf="mFareDetailsOption">
+            <div class="flight-segment-details rounded-0">
+                <!-- start of fare Breakup detail -->
+                <div class="bg-white">
+                    <div class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                        Fare Breakup Details
+                    </div>
+                    <div class="table-responsive" style="background:#ccc">
+                        <table class="table m-0">
+                            <tr>
+                                <th>Passenger</th>
+                                <th>Base Fare</th>
+                                <th>Total</th>
+                            </tr>
+                            <tr *ngFor="let Fare of mFareDetailsOption.AirItineraryPricingInfo[0].PTC_FareBreakdowns.PTC_FareBreakdown;let f=index;">
+                                <td>{{Fare.PassengerTypeQuantity.Code}} X {{Fare.PassengerTypeQuantity.Quantity}}</td>
+                                <td>{{Fare.PassengerFare.EquivFare.CurrencyCode}} {{Fare.PassengerFare.EquivFare.Amount}}</td>
+                                <td>{{Fare.PassengerFare.EquivFare.CurrencyCode}} {{Fare.PassengerFare.EquivFare.Amount * Fare.PassengerTypeQuantity.Quantity}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- end of fare Breakup detail -->
+                <!-- start of tax Breakup detail -->
+                <div class="bg-white">
+                    <div class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                        Tax Breakup Details
+                    </div>
+                    <div class="table-responsive" style="background:#ccc">
+                        <table class="table m-0">
+                            <tr *ngFor="let Tax of mFareDetailsOption.AirItineraryPricingInfo[0].PTC_FareBreakdowns.PTC_FareBreakdown;let t=index;">
+                                <table>
+                                    <tr>
+                                        <th>Passenger</th>
+                                        <th>Tax Fare</th>
+                                        <th>Total Tax</th>
+                                    </tr>
+                                    <tr>
+                                        <td>{{Tax.PassengerTypeQuantity.Code}} X {{Tax.PassengerTypeQuantity.Quantity}}</td>
+                                        <td>{{Tax.PassengerFare.Taxes.TotalTax.CurrencyCode}} {{Tax.PassengerFare.Taxes.TotalTax.Amount}}</td>
+                                        <td>{{Tax.PassengerFare.Taxes.TotalTax.CurrencyCode}} {{Tax.PassengerFare.Taxes.TotalTax.Amount * Tax.PassengerTypeQuantity.Quantity}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><b>Breakup: </b><span *ngFor="let breakup of Tax.PassengerFare.Taxes.Tax;">
+                                                <span *ngIf="breakup.Amount != 0">
+                                                    {{breakup.Amount}}{{breakup.TaxCode}} 
+                                                </span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- end of tax Breakup detail -->
+                <!-- start of allowance detail -->
+                <div class="bg-white" *ngFor="let TPA of mFareDetailsOption.AirItineraryPricingInfo[0].PTC_FareBreakdowns.PTC_FareBreakdown;let ra=index;">
+                    <div *ngIf="ra == 0" class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                        Restrictions & Allowance
+                    </div>
+                    <div *ngIf="ra == 0" class="row m-0 py-1" style="background:#ccc">
+                        <div class="col-sm-6"><b>Endorsment / Restrictions</b></div>
+                        <div class="col-sm-6">
+                            <span *ngFor="let message of TPA.PassengerFare.TPA_Extensions.Messages.Message;let msgIndex = index">
+                                    {{message.Info}}<br />
+                                </span>
+                        </div>
+                        <div class="col-sm-2"><b>Baggage</b></div>
+                        <div class="col-sm-2">
+                            <span *ngIf="TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Weight">
+                                        {{TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Weight}}
+                                        {{TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Unit}}
+                                    </span>
+                            <span *ngIf="TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Pieces">
+                                        {{TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Pieces}} Pieces
+                                    </span>
+                        </div>
+                        <div class="col-sm-4"><b>Fare Information</b></div>
+                        <div class="col-sm-4">
+                            <span><b>Base Fare:</b>
+                                    {{TPA.PassengerFare.EquivFare.Amount * TPA.PassengerTypeQuantity.Quantity}}
+                                    {{TPA.PassengerFare.EquivFare.CurrencyCode}}
+                                </span><br />
+                            <span>
+                                    <b>Total Taxes:</b>
+                                    {{TPA.PassengerFare.Taxes.TotalTax.Amount * TPA.PassengerTypeQuantity.Quantity}}
+                                    {{TPA.PassengerFare.Taxes.TotalTax.CurrencyCode}}
+                                </span><br />
+                            <span>
+                                    <b>Total Fare:</b>
+                                    {{TPA.PassengerFare.TotalFare.Amount * TPA.PassengerTypeQuantity.Quantity}}
+                                    {{TPA.PassengerFare.TotalFare.CurrencyCode}}
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of allowance detail -->
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer #flightDetailsPopup class="mat-drawer" position="start">
+        <h3 class="sidebar-title">
+            Flight Details
+            <i class="material-icons popup-clr-btn pull-right" (click)="flightDetailsPopup.close();msideNav = false">highlight_off</i>
+        </h3>
+        <mat-spinner *ngIf="mbyTag == null"></mat-spinner>
+        <div id="mbyTagError" *ngIf="mbyTag == 'Error'" style="color:red">
+            <p>Flight Not Valid, try again later</p>
+        </div>
+        <div class="flight-segment-details" style="overflow-x:hidden;" *ngIf="mOriginDestinationOptions != null">
+            <div *ngFor="let Segments of mOriginDestinationOptions">
+                <div class="bg-white" *ngFor="let Segment of Segments.FlightSegment">
+                    <div class="flight-segment-details-header py-1 px-2">
+                        {{Segment.DepartureAirport.LocationCode | airPorts}}
+                        <b>TO</b> {{Segment.ArrivalAirport.LocationCode | airPorts}}
+                    </div>
+                    <div class="row py-2 d-flex align-items-center flight-details-sec">
+                        <div class="col-4">
+                            <p class="mb-0">Flight</p>
+                        </div>
+                        <div class="col-8 pl-0 d-flex justify-content-between">
+                            <div>
+                                <img class="img-fluid" src="AirlineLogos/{{Segment.OperatingAirline.Code}}.png" alt="EK Logo"> {{Segment.OperatingAirline.Code}} {{Segment.OperatingAirline.FlightNumber}}
+                            </div>
+                            <div>
+                                <p class="mb-0">Class : {{Segment.ResBookDesigCode}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2 d-flex align-items-center flight-details-sec">
+                        <div class="col-4">
+                            <p class="mb-0">Departure</p>
+                        </div>
+                        <div class="col-8 pl-0">
+                            <div class="d-flex justify-contents-between">
+                                <div>
+                                    <i class="material-icons">room</i>
+                                </div>
+                                <div>
+                                    <p class="mb-0">{{Segment.DepartureAirport.LocationCode | airPorts}}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-contents-between">
+                                    <div>
+                                        <i class="material-icons">date_range</i>
+                                    </div>
+                                    <div>
+                                        <small>{{Segment.DepartureDateTime | date:"MMM dd, yyyy"}}</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-contents-between">
+                                    <div>
+                                        <i class="material-icons">access_time</i>
+                                    </div>
+                                    <div>
+                                        <small>{{Segment.DepartureDateTime | date:"HH:mm a"}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-contents-between">
+                                <div>
+                                    <i class="material-icons">room</i>
+                                </div>
+                                <div>
+                                    <p class="mb-0">{{Segment.DepartureAirport.LocationCode | airPorts: '1'}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2 d-flex align-items-center flight-details-sec">
+                        <div class="col-4">
+                            <p class="mb-0">Duration</p>
+                        </div>
+                        <div class="col-8 pl-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted d-flex align-items-center">
+                                    <i class="material-icons">access_time</i>
+                                    &nbsp;{{Segment.ElapsedTime | secondsPipe}}
+                                </small>
+                            </div>
+                            <div>
+                                <p class="mb-0 text-primary">{{Segment.StopQuantity}} Stop</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2 d-flex align-items-center flight-details-sec">
+                        <div class="col-4">
+                            <p class="mb-0">Arrival</p>
+                        </div>
+                        <div class="col-8 pl-0">
+                            <div class="d-flex">
+                                <div>
+
+                                    <i class="material-icons">room</i>
+                                </div>
+                                <div>
+                                    <p class="mb-0">{{Segment.ArrivalAirport.LocationCode | airPorts}}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex">
+                                    <div>
+                                        <i class="material-icons">date_range</i>
+                                    </div>
+                                    <div>
+                                        <small>{{Segment.ArrivalDateTime | date:"MMM dd, yyyy"}}</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div>
+                                        <i class="material-icons">access_time</i>
+                                    </div>
+                                    <div>
+                                        <small>{{Segment.ArrivalDateTime | date:"HH:mm a"}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div>
+
+                                    <i class="material-icons">room</i>
+                                </div>
+                                <div>
+                                    <p class="mb-0">{{Segment.ArrivalAirport.LocationCode | airPorts: '1'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content class="mat-drawer-content">
+        <app-header></app-header>
+        <div class="current-flight-search d-block d-sm-none mb-3">
+            <div class="current-search-sector row d-flex align-items-center pb-2">
+                <div class="col-5 pr-0">
+                    <p>{{oLocation | airPorts}}</p>
+                </div>
+                <div class="col-2 text-center">
+                    <i class="material-icons">arrow_forward</i>
+                </div>
+                <div class="col-5 pl-0">
+                    <p>{{dLocation | airPorts}}</p>
+                </div>
+            </div>
+            <p class="current-search-passenger text-center">{{adtQty}} Adult(s), {{cnnQty}} Child, {{infQty}} Infant</p>
+            <div class="current-search-footer d-flex justify-content-between align-items-center dropdown">
+                <div class="current-search-dates d-flex align-items-center">
+                    <p class="mr-3">
+                        <i class="material-icons">date_range</i>{{dptDate | date}}
+                    </p>
+
+                    <span *ngIf="isReturn">
+                        <p class="mr-3">
+                            <i class="material-icons">date_range</i>{{rtnDate | date}}
+                        </p>
+                    </span>
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-sm rounded-0 shadow" (click)="searchForm.toggle();">Change
+                        Search</button>
+                </div>
+            </div>
+            <p><button class="btn rounded-0 shadow btn-primary" (click)="filterForm.toggle();"><i class="material-icons">filter_list</i> Filter Your Search</button>
+            </p>
+            <!-- <mat-card class="flight-list-header d-block d-sm-none mb-2 py-2 px-2 px-sm-3 mat-card" style="background: none;">
+                <div class="d-flex justify-content-between">
+                    </div>
+            </mat-card> -->
+        </div>
+        <!-- <mat-sidenav-container class="example-container">
+            <mat-sidenav mode="side" opened="{{msideNav}}">
+                <h3 class="sidebar-title">
+                    Flight Details
+                    <i-x-circle class="dropdown-feather" (click)="msideNav = false"></i-x-circle>
+                </h3>
+                <mat-spinner *ngIf="mbyTag == null"></mat-spinner>
+                <div id="mbyTagError" *ngIf="mbyTag == 'Error'" style="color:red">
+                    <p>Flight Not Valid, try again later</p>
+                </div>
+                <div class="flight-segment-details" style="overflow-x:hidden;" *ngIf="mOriginDestinationOptions != null">
+                    <div *ngFor="let Segments of mOriginDestinationOptions">
+                        <div class="bg-white" *ngFor="let Segment of Segments.FlightSegment">
+                            <div class="flight-segment-details-header py-1 px-2">
+                                {{Segment.DepartureAirport.LocationCode | airPorts}}
+                                <b>TO</b> {{Segment.ArrivalAirport.LocationCode | airPorts}}
+                            </div>
+                            <div class="row py-2 d-flex align-items-center flight-details-sec">
+                                <div class="col-4">
+                                    <p class="mb-0">Flight</p>
+                                </div>
+                                <div class="col-8 pl-0 d-flex justify-content-between">
+                                    <div>
+                                        <img class="img-fluid" src="/{{Segment.OperatingAirline.Code}}.png" alt="EK Logo"> {{Segment.OperatingAirline.Code}} {{Segment.OperatingAirline.FlightNumber}}
+                                    </div>
+                                    <div>
+                                        <p class="mb-0">Class : {{Segment.ResBookDesigCode}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-2 d-flex align-items-center flight-details-sec">
+                                <div class="col-4">
+                                    <p class="mb-0">Departure</p>
+                                </div>
+                                <div class="col-8 pl-0">
+                                    <div class="d-flex justify-contents-between">
+                                        <div>
+                                            
+                                    	<i class="material-icons">room</i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0">{{Segment.DepartureAirport.LocationCode | airPorts}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-contents-between">
+                                            <div>
+                                                <i class="material-icons">date_range</i>
+                                            </div>
+                                            <div>
+                                                <small>{{Segment.DepartureDateTime | date:"MMM dd, yyyy"}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-contents-between">
+                                            <div>
+                                                <i class="material-icons">access_time</i>
+                                            </div>
+                                            <div>
+                                                <small>{{Segment.DepartureDateTime | date:"HH:mm a"}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-contents-between">
+                                        <div>
+                                            
+                                    	<i class="material-icons">room</i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0">{{Segment.DepartureAirport.LocationCode | airPorts: '1'}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-2 d-flex align-items-center flight-details-sec">
+                                <div class="col-4">
+                                    <p class="mb-0">Duration</p>
+                                </div>
+                                <div class="col-8 pl-0 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted d-flex align-items-center">
+                                            <i class="material-icons">access_time</i>
+                                            &nbsp;{{Segment.ElapsedTime | secondsPipe}}
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 text-primary">{{Segment.StopQuantity}} Stop</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-2 d-flex align-items-center flight-details-sec">
+                                <div class="col-4">
+                                    <p class="mb-0">Arrival</p>
+                                </div>
+                                <div class="col-8 pl-0">
+                                    <div class="d-flex">
+                                        <div>
+                                            
+                                    	<i class="material-icons">room</i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0">{{Segment.ArrivalAirport.LocationCode | airPorts}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex">
+                                            <div>
+                                                <i class="material-icons">date_range</i>
+                                            </div>
+                                            <div>
+                                                <small>{{Segment.ArrivalDateTime | date:"MMM dd, yyyy"}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div>
+                                                <i class="material-icons">access_time</i>
+                                            </div>
+                                            <div>
+                                                <small>{{Segment.ArrivalDateTime | date:"HH:mm a"}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div>
+                                            
+                                    	<i class="material-icons">room</i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0">{{Segment.ArrivalAirport.LocationCode | airPorts: '1'}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-sidenav>
+        </mat-sidenav-container> -->
+        <section class="flight-serch pt-0 pt-sm-2 main-search-form" style="position:relative">
+            <div class="container" style="position:relative">
+                <!-- <div class="section-title d-none d-sm-block">
+                    <h1>Flight Search</h1>
+                </div> -->
+                <div class="current-flight-search shadow d-none d-sm-flex justify-content-between align-items-center mb-3">
+                    <div class="w-100 current-search-sector d-flex align-items-center">
+                        <div class="col-5 pr-0">
+                            <p>{{oLocation | airPorts}}</p>
+                        </div>
+                        <div class="col-2 text-center">
+                            <i class="material-icons">arrow_forward</i>
+                        </div>
+                        <div class="col-5 pl-0">
+                            <p>{{dLocation | airPorts}}</p>
+                        </div>
+                    </div>|
+                    <div class="w-50 d-flex justify-content-center align-items-center">
+                        <div class="current-search-dates d-flex align-items-center">
+                            <i class="material-icons">date_range</i>
+                            <p class="mr-3">
+                                {{dptDate | date}}
+                            </p>
+                            <!-- <span *ngIf="isReturn"> -->
+                            <i class="material-icons" *ngIf="isReturn">date_range</i>
+                            <p *ngIf="isReturn" class="mr-3">
+                                {{rtnDate | date}}
+                            </p>
+                            <!-- </span> -->
+                        </div>
+                    </div>|
+                    <div class="w-50 d-flex justify-content-center align-items-center">
+                        <div class="d-flex align-items-center">
+                            <p class="current-search-passenger text-center">{{adtQty}} Adult(s), {{cnnQty}} Child, {{infQty}} Infant</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary btn-sm rounded-0 shadow" (click)="searchForm.toggle();desktopSideForm()">Change Search</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 order-last order-sm-first">
+                        <div class="sidebar-list d-none d-sm-block">
+                            <!-- <h3 class="sidebar-title">Filter Your Search</h3>
+                            <ul class="list-style-none p-0 stop-filter" *ngIf="stopFilteritems.length > 0">
+                                <li *ngFor="let stopFilteritem of stopFilteritems">
+                                    <mat-checkbox (change)="airlineFilters($event, 'stop', 'd')" value="{{stopFilteritem.value}}" class="mat-checkbox">
+                                        {{stopFilteritem.text}} </mat-checkbox>
+                                </li>
+                            </ul> -->
+                            <div *ngIf="minPrice > 0">
+                                <h3 class="sidebar-title">Filter By Price</h3>
+                                <ng5-slider [(value)]="minPrice" [(highValue)]="maxPrice" [options]="options" (valueChange)="rangeUpdated()"></ng5-slider>
+                            </div>
+                            <div *ngIf="responseAirlinesUnique.length > 0">
+                                <h3 class="sidebar-title">Filter By AirLine</h3>
+                                <ul class="list-style-none p-0 stop-filter" *ngIf="stopFilteritems.length > 0">
+                                    <li *ngFor="let eachAirLine of responseAirlinesUnique">
+                                        <mat-checkbox (change)="airlineFilters($event, 'airline', 'd')" value="{{eachAirLine.value}}" class="mat-checkbox">
+                                            <img src="AirlineLogos/{{eachAirLine.value}}.png" alt="{{eachAirLine.text}}" width="30"> {{eachAirLine.text}}
+                                        </mat-checkbox>
+                                        <span class="pull-right">{{eachAirLine.lowestAmount}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- <div class="sidebar-subscribe mt-4">
+                            <p class="mb-0">Subscribe to Get Amazing Offers</p>
+                            <h3>Flight Alerts</h3>
+                            <button class="btn btn-secondary">Subscribe</button>
+                        </div> -->
+                        <div class="sidebar-list">
+                            <app-request-callback-form></app-request-callback-form>
+                        </div>
+                        <app-amazing-visa-offer></app-amazing-visa-offer>
+                    </div>
+                    <div class="col-sm-9 flight-listing">
+                        <!-- <mat-card class="flight-list-header d-block d-sm-none mb-2 py-2 px-2 px-sm-3 mat-card">
+                            <div class="d-flex justify-content-between">
+                                <button class="btn rounded-0 shadow btn-secondary" (click)="filterForm.toggle();"><i class="material-icons">filter_list</i> Filter</button>
+                            </div>
+                        </mat-card> -->
+                        <div class="loading-container" *ngIf="availableFlights == 'Loading'">
+                            <p class="center">Loading Results</p>
+                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                        </div>
+                        <div class="rowsParent" *ngIf="availableFlights && availableFlights != 'Loading'">
+
+                            <!-- mobile listing start -->
+                            <!-- <table class="d-table d-sm-none table table-bordered" border="1" *ngFor="let Itinerary of availableFlights; let i=index; let la = last">
+                                <tr>
+                                    <td>
+                                        <table class="d-table table table-bordered" border="1" *ngFor="let Segment of Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption; let l=last">
+                                            <tr>
+                                                <td>
+                                                    <img class="img-fluid mx-1" src="/{{Itinerary.TPA_Extensions.ValidatingCarrier.Code}}.png" alt="{{Itinerary.TPA_Extensions.ValidatingCarrier.Code}} Logo">
+                                                    <p>{{Segment.FlightSegment[0].DepartureAirport.LocationCode | airPorts: '2'}}</p>
+                                                    <p>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalAirport.LocationCode | airPorts: '2'}}</p>
+
+                                                    <p>{{Segment.FlightSegment[0].DepartureDateTime.replace('T', ' ') | date : 'medium'}}</p>
+
+                                                    <p>{{Segment.FlightSegment[0].StopQuantity}} Stop</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><button class="btn btn-default align-items-center p-3" (click)="showFlightDetailsM(Itinerary, i)">
+                                        <i class="material-icons">add_circle_outline</i> Details
+                                    </button>
+                                        <button class="flight-select-btn btn btn-primary rounded-0 border-0 p-3 px-4 ml-2" (click)="airByTag(Itinerary, i, 'MS')">Select
+                                        <i class="material-icons">arrow_forward</i>
+                                    </button>
+                                        <b class="btn btn-warning price font-weight-bold d-flex align-items-center p-3 pl-3 pr-3">
+                                        {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.CurrencyCode}}
+                                        {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.Amount}}
+                                        /-
+                                    </b></td>
+                                </tr>
+                            </table> -->
+                            <div class="d-block d-sm-none eachRowM" *ngFor="let Itinerary of availableFlights; let i=index; let la = last">
+                                <mat-card class="mobile-flight-segment-logo d-flex justify-content-center align-items-center bg-white py-1 px-2 pb-0 rounded-0 mat-card">
+                                    <div class="d-inline-block">
+                                        <div class="d-inline-block text-center">
+                                            <div>
+                                                <img class="img-fluid mx-1" src="AirlineLogos/{{Itinerary.TPA_Extensions.ValidatingCarrier.Code}}.png" alt="{{Itinerary.TPA_Extensions.ValidatingCarrier.Code}} Logo">
+                                            </div>
+                                        </div>
+                                        <div class="d-inline-block text-center"></div>
+                                    </div>
+                                </mat-card>
+                                <div class="mobile-flight-segment flight-segment p-0">
+                                    <mat-card class="mb-2 p-0 pt-1 rounded-0 mat-card">
+                                        <div class="d-flex row align-items-center pb-2 px-3" *ngFor="let Segment of Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption; let l=last">
+                                            <div class="col-5 col-xs-5">
+                                                <h5>{{Segment.FlightSegment[0].DepartureAirport.LocationCode | airPorts: '2'}}
+                                                </h5>
+                                                <small>{{Segment.FlightSegment[0].DepartureDateTime | date:"MMM dd, yyyy"}}</small>
+                                                <small class="d-block">{{Segment.FlightSegment[0].DepartureDateTime | date:"HH:mm a"}}</small>
+                                            </div>
+                                            <div class="text-center col-2 col-xs-2 px-0">
+                                                <div class="text-center">
+                                                    <span class="text-muted d-flex align-items-center" style="font-size:10px;">
+                                                        <i class="material-icons">access_time</i>&nbsp;
+                                                        {{Segment.ElapsedTime | secondsPipe}}
+                                                    </span>
+                                                </div>
+                                                <div class="text-center">
+                                                    <img alt="Flight Sector Icon" class="img-fluid" src="assets/img/icons/flight_to-ic.png">
+                                                </div>
+                                                <div class="text-center">
+                                                    <p class="text-primary">{{Segment.FlightSegment[0].StopQuantity}} Stop
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="col-5 col-xs-5">
+                                                <h5>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalAirport.LocationCode | airPorts: '2'}}
+                                                </h5>
+                                                <small>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].DepartureDateTime | date:"MMM dd, yyyy"}}</small>
+                                                <small class="d-block">{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].DepartureDateTime | date:"HH:mm a"}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="center" style="display:none" id="isValidatingM_{{i}}">
+                                            <span id="isValidatingMsgM_{{i}}">Checking Information</span>
+                                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                                        </div>
+                                        <div class="segment-footer d-flex justify-content-between align-items-center">
+                                            <!-- <div class="price font-weight-bold"></div> -->
+                                            <div class="book-details d-flex">
+                                                <button class="btn btn-default rounded-0 align-items-center p-3" (click)="flightDetailsPopup.toggle();showFlightDetailsM(Itinerary, i);">
+                                                    <i class="material-icons">add_circle_outline</i> Details
+                                                </button>
+                                                <button class="flight-select-btn btn btn-primary rounded-0 border-0 p-3" (click)="airByTag(Itinerary, i, 'MS')">Select
+                                                    <i class="material-icons">arrow_forward</i>
+                                                </button>
+                                                <button class="btn btn-primary rounded-0 price dark-btn font-weight-bold d-flex align-items-center p-3" (click)="fareDetailsPopup.toggle();showFareDetailsPopup(Itinerary, i);">
+                                                        <i class="material-icons">add_circle_outline</i> {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.CurrencyCode}}
+                                                    {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.Amount}}
+                                                    /-
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                                <div class="{{Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption[0].FlightSegment[0].OperatingAirline.Code}}" style="display:none;">&nbsp;</div>
+                            </div>
+                            <!-- mobile listing end -->
+                            <!-- desktop listing -->
+                            <div class="card shadow rounded-0 mb-3 p-0 d-none d-sm-block">
+                                <div class="card-body">
+                                    <div>
+                                        <div>
+                                            <div class="flights-headings">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="col-sm-1 pr-2">
+                                                        <p>Airline</p>
+                                                    </div>
+                                                    <div class="col-sm-3 px-2">
+                                                        <p>Duration</p>
+                                                    </div>
+                                                    <div class="col-sm-3 px-2">
+                                                        <p>Departure</p>
+                                                    </div>
+                                                    <div class="col-sm-2 px-2 center">
+                                                        <p>Stop</p>
+                                                    </div>
+                                                    <div class="col-sm-3 px-2">
+                                                        <p>Arrival</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card shadow rounded-0 mb-3 p-0 d-none d-sm-block eachRow" *ngFor="let Itinerary of availableFlights; let i=index;">
+                                <div class="card-body">
+                                    <div>
+                                        <div>
+                                            <div *ngFor="let Segment of Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption; let l=last" class="flight-segment">
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-sm-1 pr-2 text-left">
+                                                        <div class="d-inline-block text-center">
+                                                            <img class="img-fluid" src="AirlineLogos/{{Segment.FlightSegment[0].OperatingAirline.Code}}.png" alt="{{Segment.FlightSegment[0].OperatingAirline.Code}} Logo">
+                                                            <p>{{Segment.FlightSegment[0].OperatingAirline.Code}} {{Segment.FlightSegment[0].OperatingAirline.FlightNumber}}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 px-2">
+                                                        <h5><span *ngFor="let flgtSegment of Segment.FlightSegment">{{flgtSegment.DepartureAirport.LocationCode}}
+                                                                -
+                                                            </span>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalAirport.LocationCode}}
+                                                        </h5>
+                                                        <small class="text-muted d-flex align-items-center">
+                                                            <i class="material-icons">access_time</i>
+                                                            &nbsp;{{Segment.ElapsedTime | secondsPipe}}
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-sm-3 px-2 d-flex align-items-start">
+                                                        <div class="d-inline-block">
+                                                            <p>{{Segment.FlightSegment[0].DepartureAirport.LocationCode | airPorts}}
+                                                            </p>
+                                                            <small>{{Segment.FlightSegment[0].DepartureDateTime | date:"MMM dd, yyyy HH:mm a"}}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2 px-2 text-center">
+                                                        <img alt="" class="d-inline-block pt-1 pr-2" src="assets/img/icons/flight_to-ic.png">
+                                                        <p class="text-primary">
+                                                            {{Segment.FlightSegment[0].StopQuantity}} Stop</p>
+                                                    </div>
+                                                    <div class="col-sm-3 px-2  d-flex align-items-start">
+                                                        <div class="d-inline-block">
+                                                            <p>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalAirport.LocationCode | airPorts}}
+                                                            </p>
+                                                            <small>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalDateTime | date:"MMM dd, yyyy HH:mm a"}}</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="isValidating_{{i}}" style="display:none" class="center">
+                                        <span id="isValidatingMsg_{{i}}">Checking Information</span>
+                                        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                                    </div>
+                                    <div class="segment-footer pl-3 d-flex justify-content-between align-items-center">
+                                        <div class="price font-weight-bold"></div>
+                                        <div class="book-details d-flex">
+                                            <a class="d-flex align-items-center mr-2" (click)="flightDetailsToggle($event, 'FBD')" data-toggle="collapse" data-target="#FareBreakdownDetails-{{i}}" href="#" role="button">
+                                                <span id="FBDplus_{{i}}">
+                                                            <i class="material-icons">add_circle_outline</i>&nbsp;View Fare & Taxes
+                                                        </span>
+                                                <span id="FBDminus_{{i}}" style="display:none">
+                                                            <i class="material-icons">remove_circle_outline</i>&nbsp;Hide Fare & Taxes
+                                                        </span>
+                                            </a>
+                                            <a class="d-flex align-items-center" (click)="flightDetailsToggle($event)" data-toggle="collapse" data-target="#showFlightDetails-{{i}}" href="#" role="button">
+                                                <span id="plus_{{i}}">
+                                                    <i class="material-icons">add_circle_outline</i>&nbsp;View Details
+                                                </span>
+                                                <span id="minus_{{i}}" style="display:none">
+                                                    <i class="material-icons">remove_circle_outline</i>&nbsp;Hide Details
+                                                </span>
+                                            </a>
+                                            <button class="flight-select-btn d-flex btn btn-primary rounded-0 border-0 px-5 py-2 ml-2" (click)="airByTag(Itinerary, i)">Select
+                                                <i class="material-icons">arrow_forward</i>
+                                            </button>
+                                            <b class="price font-weight-bold d-flex pl-3 pr-3 align-items-center">
+                                                {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.CurrencyCode}}
+                                                {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.Amount}}
+                                                /-
+                                            </b>
+                                        </div>
+                                    </div>
+
+                                    <div class="flight-segment-details p-2 rounded-0 collapse" id="FareBreakdownDetails-{{i}}">
+                                        <!-- start of fare Breakup detail -->
+                                        <div class="bg-white" *ngFor="let Fare of Itinerary.AirItineraryPricingInfo[0].PTC_FareBreakdowns.PTC_FareBreakdown;let f=index;">
+                                            <div *ngIf="f == 0" class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                                                Fare Breakup Details
+                                            </div>
+                                            <div *ngIf="f == 0" class="row m-0 py-1" style="background:#ccc">
+                                                <div class="col-sm-8">Passenger</div>
+                                                <div class="col-sm-2">Base Fare</div>
+                                                <!-- <div class="col-sm-2">Construction</div>
+                                                <div class="col-sm-3">Equivalent Fare</div> -->
+                                                <div class="col-sm-2">Total</div>
+                                            </div>
+                                            <div class="row m-0 py-1">
+                                                <div class="col-sm-8">{{Fare.PassengerTypeQuantity.Code}} X {{Fare.PassengerTypeQuantity.Quantity}}
+                                                </div>
+                                                <!-- <div class="col-sm-2"> {{Fare.PassengerFare.BaseFare.Amount}} {{Fare.PassengerFare.BaseFare.CurrencyCode}}
+                                                </div> -->
+                                                <div class="col-sm-2"> {{Fare.PassengerFare.EquivFare.Amount}} {{Fare.PassengerFare.EquivFare.CurrencyCode}}
+                                                </div>
+                                                <!-- <div class="col-sm-2"> {{Fare.PassengerFare.FareConstruction.Amount}} {{Fare.PassengerFare.FareConstruction.CurrencyCode}}
+                                                </div>
+                                                <div class="col-sm-3"> {{Fare.PassengerFare.EquivFare.Amount}} {{Fare.PassengerFare.EquivFare.CurrencyCode}}
+                                                </div> -->
+                                                <div class="col-sm-2"> {{Fare.PassengerFare.EquivFare.Amount * Fare.PassengerTypeQuantity.Quantity}} {{Fare.PassengerFare.EquivFare.CurrencyCode}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end of fare Breakup detail -->
+                                        <!-- start of tax Breakup detail -->
+                                        <div class="bg-white" *ngFor="let Tax of Itinerary.AirItineraryPricingInfo[0].PTC_FareBreakdowns.PTC_FareBreakdown;let t=index;">
+                                            <div *ngIf="t == 0" class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                                                Tax Breakup Details
+                                            </div>
+                                            <div *ngIf="t == 0" class="row m-0 py-1" style="background:#ccc">
+                                                <div class="col-sm-2">Passenger</div>
+                                                <div class="col-sm-6">Breakup</div>
+                                                <div class="col-sm-2">Tax Fare</div>
+                                                <div class="col-sm-2">Total Tax </div>
+                                            </div>
+                                            <div class="row m-0 py-1">
+                                                <div class="col-sm-2">{{Tax.PassengerTypeQuantity.Code}} X {{Tax.PassengerTypeQuantity.Quantity}}</div>
+                                                <div class="col-sm-6">
+                                                    <span *ngFor="let breakup of Tax.PassengerFare.Taxes.Tax;">
+                                                    <span *ngIf="breakup.Amount != 0">
+                                                        {{breakup.Amount}}{{breakup.TaxCode}} 
+                                                    </span>
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-2"> {{Tax.PassengerFare.Taxes.TotalTax.Amount}}</div>
+                                                <div class="col-sm-2"> {{Tax.PassengerFare.Taxes.TotalTax.Amount * Tax.PassengerTypeQuantity.Quantity}}</div>
+                                            </div>
+                                        </div>
+                                        <!-- end of tax Breakup detail -->
+                                        <!-- start of allowance detail -->
+                                        <div class="bg-white" *ngFor="let TPA of Itinerary.AirItineraryPricingInfo[0].PTC_FareBreakdowns.PTC_FareBreakdown;let ra=index;">
+                                            <div *ngIf="ra == 0" class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                                                Restrictions & Allowance
+                                            </div>
+                                            <div *ngIf="ra == 0" class="row m-0 py-1" style="background:#ccc">
+                                                <div class="col-sm-6">Endorsment / Restrictions</div>
+                                                <div class="col-sm-2">Baggage</div>
+                                                <div class="col-sm-4">Fare Information</div>
+                                            </div>
+                                            <div class="row m-0 py-1">
+                                                <div class="col-sm-6">
+                                                    <span *ngFor="let message of TPA.PassengerFare.TPA_Extensions.Messages.Message;let msgIndex = index">
+                                                    {{message.Info}}<br />
+                                                </span>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <span *ngIf="TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Weight">
+                                                        {{TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Weight}}
+                                                        {{TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Unit}}
+                                                    </span>
+                                                    <span *ngIf="TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Pieces">
+                                                        {{TPA.PassengerFare.TPA_Extensions.BaggageInformationList.BaggageInformation[0].Allowance[0].Pieces}} Pieces
+                                                    </span>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <span>Base Fare:
+                                                    {{TPA.PassengerFare.EquivFare.Amount * TPA.PassengerTypeQuantity.Quantity}}
+                                                    {{TPA.PassengerFare.EquivFare.CurrencyCode}}
+                                                </span><br />
+                                                    <span>
+                                                    Total Taxes:
+                                                    {{TPA.PassengerFare.Taxes.TotalTax.Amount * TPA.PassengerTypeQuantity.Quantity}}
+                                                    {{TPA.PassengerFare.Taxes.TotalTax.CurrencyCode}}
+                                                </span><br />
+                                                    <span>
+                                                    Total Fare:
+                                                    {{TPA.PassengerFare.TotalFare.Amount * TPA.PassengerTypeQuantity.Quantity}}
+                                                    {{TPA.PassengerFare.TotalFare.CurrencyCode}}
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end of allowance detail -->
+                                    </div>
+                                    <div class="flight-segment-details p-2 rounded-0 collapse" id="showFlightDetails-{{i}}">
+                                        <div *ngFor="let Segment of Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption">
+                                            <div class="bg-white" *ngFor="let eachSegment of Segment.FlightSegment">
+                                                <div class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                                                    <img alt="Flight Sector Icon" class="mr-2" src="assets/img/icons/two-flighs-logo.png"> {{eachSegment.DepartureAirport.LocationCode | airPorts}} - {{eachSegment.ArrivalAirport.LocationCode | airPorts}}
+                                                </div>
+                                                <div class="row m-0 py-1" style="background:#ccc">
+                                                    <div class="col-sm-2">Flight</div>
+                                                    <div class="col-sm-3">Departure</div>
+                                                    <div class="col-sm-2">Flight Duration</div>
+                                                    <div class="col-sm-3">Arrival</div>
+                                                    <div class="col-sm-2">Stop</div>
+                                                </div>
+                                                <div class="row m-0 py-2 d-flex align-items-center">
+                                                    <div class="col-sm-2">
+                                                        <div class="d-inline-block text-center">
+                                                            <img class="img-fluid" src="AirlineLogos/{{eachSegment.OperatingAirline.Code}}.png" alt="EY Logo">
+                                                            <p class="mb-0">{{eachSegment.OperatingAirline.Code}} {{eachSegment.FlightNumber}}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+
+                                                                <i class="material-icons">room</i>
+                                                            </div>
+                                                            <div>
+                                                                <p class="mb-0">
+                                                                    {{eachSegment.DepartureAirport.LocationCode | airPorts}}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+                                                                <i class="material-icons">date_range</i>
+                                                            </div>
+                                                            <div>
+                                                                <small>{{eachSegment.DepartureDateTime | date : 'EEEE, MMMM d, y'}}</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+                                                                <i class="material-icons">access_time</i>
+                                                            </div>
+                                                            <div>
+                                                                <small>{{eachSegment.DepartureDateTime | date : 'HH:mm'}}</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+
+                                                                <i class="material-icons">room</i>
+                                                            </div>
+                                                            <div>
+                                                                <p class="mb-0">
+                                                                    {{eachSegment.DepartureAirport.LocationCode | airPorts: '1'}}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <small class="text-muted d-flex align-items-center">
+                                                            <i class="material-icons">access_time</i>
+                                                            &nbsp;{{eachSegment.ElapsedTime | secondsPipe}}
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+
+                                                                <i class="material-icons">room</i>
+                                                            </div>
+                                                            <div>
+                                                                <p class="mb-0">
+                                                                    {{eachSegment.ArrivalAirport.LocationCode | airPorts}}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+                                                                <i class="material-icons">date_range</i>
+                                                            </div>
+                                                            <div>
+                                                                <small>{{eachSegment.ArrivalDateTime | date : 'EEEE, MMMM d, y'}}</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+                                                                <i class="material-icons">access_time</i>
+                                                            </div>
+                                                            <div>
+                                                                <small>{{eachSegment.ArrivalDateTime | date : 'HH:mm'}}</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-contents-between">
+                                                            <div>
+
+                                                                <i class="material-icons">room</i>
+                                                            </div>
+                                                            <div>
+                                                                <p class="mb-0">
+                                                                    {{eachSegment.ArrivalAirport.LocationCode | airPorts: '1'}}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <p class="text-primary">{{eachSegment.StopQuantity}} Stop</p>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="eachSegment.StopQuantity > 0" class="stop_{{eachSegment.StopQuantity}}" style="display:none;">
+                                                    &nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="{{Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption[0].FlightSegment[0].OperatingAirline.Code}}" style="display:none;">&nbsp;</div>
+                            </div>
+                            <div *ngIf="moreFlights">
+                                <div *ngFor="let mFlights of moreFlights">
+                                    <div class="card shadow rounded-0 mb-3 p-0 d-none d-sm-block eachRow" *ngFor="let Itinerary of mFlights; let k=index;">
+                                        <div class="card-body">
+                                            <div>
+                                                <div>
+                                                    <div *ngFor="let Segment of Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption; let l=last" class="flight-segment">
+                                                        <div class="row d-flex align-items-center">
+                                                            <div class="col-sm-1 pr-2 text-left">
+                                                                <div class="d-inline-block text-center">
+                                                                    <img class="img-fluid" src="AirlineLogos/{{Segment.FlightSegment[0].OperatingAirline.Code}}.png" alt="{{Segment.FlightSegment[0].OperatingAirline.Code}} Logo">
+                                                                    <p>{{Segment.FlightSegment[0].OperatingAirline.Code}} {{Segment.FlightSegment[0].OperatingAirline.FlightNumber}}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3 px-2">
+                                                                <h5><span *ngFor="let flgtSegment of Segment.FlightSegment">{{flgtSegment.DepartureAirport.LocationCode}}
+                                                                        -
+                                                                    </span>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalAirport.LocationCode}}
+                                                                </h5>
+                                                                <small class="text-muted d-flex align-items-center">
+                                                                    <i class="material-icons">access_time</i>
+                                                                    &nbsp;{{Segment.ElapsedTime | secondsPipe}}
+                                                                </small>
+                                                            </div>
+                                                            <div class="col-sm-3 px-2 d-flex align-items-start">
+                                                                <div class="d-inline-block">
+                                                                    <p>{{Segment.FlightSegment[0].DepartureAirport.LocationCode | airPorts}}
+                                                                    </p>
+                                                                    <small>{{Segment.FlightSegment[0].DepartureDateTime | date : 'MMM d, y, h:mm:ss a'}}</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-2 px-2 text-center">
+                                                                <img alt="" class="d-inline-block pt-1 pr-2" src="assets/img/icons/flight_to-ic.png">
+                                                                <p class="text-primary">
+                                                                    {{Segment.FlightSegment[0].StopQuantity}} Stop</p>
+                                                            </div>
+                                                            <div class="col-sm-3 px-2  d-flex align-items-start">
+                                                                <div class="d-inline-block">
+                                                                    <p>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalAirport.LocationCode | airPorts}}
+                                                                    </p>
+                                                                    <small>{{Segment.FlightSegment[(Segment.FlightSegment.length - 1)].ArrivalDateTime | date : 'MMM d, y, h:mm:ss a'}}</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="isValidating_{{k + Offset}}" style="display:none" class="center">
+                                                <span id="isValidatingMsg_{{k + Offset}}">Checking Information</span>
+                                                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                                            </div>
+                                            <div class="segment-footer pl-3 d-flex justify-content-between align-items-center">
+                                                <div class="price font-weight-bold"></div>
+                                                <div class="book-details d-flex">
+                                                    <a class="d-flex align-items-center" (click)="flightDetailsToggle($event)" data-toggle="collapse" data-target="#showFlightDetails-{{k + Offset}}" href="#" role="button">
+                                                        <span id="plus_{{k + Offset}}">
+                                                            <i class="material-icons">add_circle_outline</i>&nbsp;View Details
+                                                        </span>
+                                                        <span id="minus_{{k + Offset}}" style="display:none">
+                                                            <i class="material-icons">remove_circle_outline</i>&nbsp;Hide Details
+                                                        </span>
+                                                    </a>
+                                                    <button class="flight-select-btn d-flex btn btn-primary rounded-0 border-0 px-5 py-2 ml-2" (click)="airByTag(Itinerary, (k + Offset))">Select
+                                                        <i class="material-icons">arrow_forward</i>
+                                                    </button>
+                                                    <b class="price font-weight-bold d-flex pl-3 pr-3 align-items-center">
+                                                        {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.CurrencyCode}}
+                                                        {{Itinerary.AirItineraryPricingInfo[0].ItinTotalFare.TotalFare.Amount}}
+                                                        /-
+                                                    </b>
+                                                </div>
+                                            </div>
+                                            <div class="flight-segment-details p-2 rounded-0 collapse" id="showFlightDetails-{{k + Offset}}">
+                                                <div *ngFor="let Segment of Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption">
+                                                    <div class="bg-white" *ngFor="let eachSegment of Segment.FlightSegment">
+                                                        <div class="flight-segment-details-header py-1 px-2 d-flex align-items-center">
+                                                            <img alt="Flight Sector Icon" class="mr-2" src="assets/img/icons/two-flighs-logo.png"> ISB,Islamabad,Pakistan - AUH,Abu Dhabi,United Arab Emirates
+                                                        </div>
+                                                        <div class="row m-0 py-1" style="background:#ccc">
+                                                            <div class="col-sm-2">Flight</div>
+                                                            <div class="col-sm-3">Departure</div>
+                                                            <div class="col-sm-2">Flight Duration</div>
+                                                            <div class="col-sm-3">Arrival</div>
+                                                            <div class="col-sm-2">Stop</div>
+                                                        </div>
+                                                        <div class="row m-0 py-2 d-flex align-items-center">
+                                                            <div class="col-sm-2">
+                                                                <div class="d-inline-block text-center">
+                                                                    <img class="img-fluid" src="AirlineLogos/{{eachSegment.OperatingAirline.Code}}.png" alt="EY Logo">
+                                                                    <p class="mb-0">
+                                                                        {{eachSegment.OperatingAirline.Code}} {{eachSegment.FlightNumber}}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+
+                                                                        <i class="material-icons">room</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="mb-0">
+                                                                            {{eachSegment.DepartureAirport.LocationCode | airPorts}}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+                                                                        <i class="material-icons">date_range</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <small>{{eachSegment.DepartureDateTime | date : 'EEEE, MMMM d, y'}}</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+                                                                        <i class="material-icons">access_time</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <small>{{eachSegment.DepartureDateTime | date : 'HH:mm'}}</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+
+                                                                        <i class="material-icons">room</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="mb-0">
+                                                                            {{eachSegment.DepartureAirport.LocationCode | airPorts: '1'}}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <small class="text-muted d-flex align-items-center">
+                                                                    <i class="material-icons">access_time</i>
+                                                                    &nbsp;{{eachSegment.ElapsedTime | secondsPipe}}
+                                                                </small>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+
+                                                                        <i class="material-icons">room</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="mb-0">
+                                                                            {{eachSegment.ArrivalAirport.LocationCode | airPorts}}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+                                                                        <i class="material-icons">date_range</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <small>{{eachSegment.ArrivalDateTime | date : 'EEEE, MMMM d, y'}}</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+                                                                        <i class="material-icons">access_time</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <small>{{eachSegment.ArrivalDateTime | date : 'h:mm:ss a'}}</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-contents-between">
+                                                                    <div>
+
+                                                                        <i class="material-icons">room</i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="mb-0">
+                                                                            {{eachSegment.ArrivalAirport.LocationCode | airPorts: '1'}}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <p class="text-primary">{{eachSegment.StopQuantity}} Stop
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div *ngIf="eachSegment.StopQuantity > 0" class="stop_{{eachSegment.StopQuantity}}" style="display:none;">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="{{Itinerary.AirItinerary.OriginDestinationOptions.OriginDestinationOption[0].FlightSegment[0].OperatingAirline.Code}}" style="display:none;">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- desktop listing end -->
+                            <!-- <div class="loadingMore center" style="display:none;">
+                                    <h4>Loading More Flights . . .</h4>
+                                </div> -->
+                        </div>
+                        <div *ngIf="availableFlights == null">
+                            <h4 class="center">No Flights Found</h4>
+                        </div>
+                        <div class="afterFilters" style="display:none;">
+                            <h4 class="center">No Matching Results</h4>
+                        </div>
+                    </div>
+                    <app-popular-airlines-and-hotels></app-popular-airlines-and-hotels>
+                </div>
+            </div>
+        </section>
+        <app-footer></app-footer>
+    </mat-drawer-content>
+</mat-drawer-container>

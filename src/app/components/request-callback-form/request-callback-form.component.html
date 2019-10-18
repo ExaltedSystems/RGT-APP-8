@@ -1,0 +1,49 @@
+<h3 class="d-none d-sm-block center sidebar-phone"><i class="material-icons">phone</i> +92 51 111 786 785</h3>
+<h3 class="d-block d-sm-none center"><a href="tel:+9251111786785" style="font-size:xx-large;color: #0744c3;cursor: pointer;"><i class="material-icons">phone</i> +92 51 111 786 785</a></h3>
+<h3 class="d-block d-sm-none center" *ngIf="isMobile && whatsappNum"><a [href]="sanitizedUrl"><i style="font-size:16px;">Click on Icon to Whatsapp your query:</i> <br><span class="text-success fa fa-4x fa-whatsapp"></span></a></h3>
+<h3 class="sidebar-title">Request a call back</h3>
+
+<form class="main-search-form position-relative" [formGroup]="contactForm" (ngSubmit)="onSubmit(contactForm.value)">
+    <div class="form-group form-input-row">
+        <mat-form-field class="form-control border-input mb-2 mb-sm-1 shadow">
+            <input matInput placeholder="Name" class="rounded-5" formControlName="name" required>
+            <!-- <i-x-circle class="feather-x-circle" *ngIf="this.contactForm.get('name').value" (click)="this.contactForm.get('name').setValue('')"></i-x-circle> -->
+            <i class="material-icons" *ngIf="this.contactForm.get('name').value" (click)="this.contactForm.get('name').setValue('')">highlight_off</i>
+            <mat-error *ngIf="contactForm.controls['name'].hasError('required') && contactForm.controls['name'].touched">Name required.</mat-error>
+            <mat-error class="mt-1" *ngIf="errors && contactForm.controls['name'].invalid">{{errors.name}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="form-group form-input-row">
+        <mat-form-field class="form-control border-input mb-2 mb-sm-1 shadow">
+            <input matInput placeholder="Email" class="rounded-5" formControlName="email" required>
+            <!-- <i-x-circle class="feather-x-circle" *ngIf="this.contactForm.get('email').value" (click)="this.contactForm.get('email').setValue('')"></i-x-circle> -->
+            <i class="material-icons" *ngIf="this.contactForm.get('email').value" (click)="this.contactForm.get('email').setValue('')">highlight_off</i>
+            <mat-error *ngIf="contactForm.controls['email'].hasError('required') && contactForm.controls['email'].touched">Email address required.</mat-error>
+            <mat-error class="mt-1" *ngIf="errors && contactForm.controls['email'].invalid">{{errors.email}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="form-group form-input-row">
+        <mat-form-field class="form-control border-input mb-2 mb-sm-1 shadow">
+            <input matInput placeholder="Contact Number" class="rounded-5" formControlName="phone" autocomplete="off" minlength="10" maxlength="19" required>
+            <!-- <i-x-circle class="feather-x-circle" *ngIf="this.contactForm.get('phone').value" (click)="this.contactForm.get('phone').setValue('')"></i-x-circle> -->
+            <i class="material-icons" *ngIf="this.contactForm.get('phone').value" (click)="this.contactForm.get('phone').setValue('')">highlight_off</i>
+            <mat-error *ngIf="contactForm.controls['phone'].hasError('required') && contactForm.controls['phone'].touched">Contact number required.</mat-error>
+            <mat-error class="mt-1" *ngIf="errors && contactForm.controls['phone'].invalid">{{errors.phone}}</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="form-group form-textarea-row">
+        <mat-form-field class="border-input textarea-input mb-2 mb-sm-1 shadow">
+            <textarea placeholder="Message" class="rounded-5" formControlName="emailMessage" matInput required></textarea>
+            <!-- <i-x-circle class="feather-x-circle" *ngIf="this.contactForm.get('emailMessage').value" (click)="this.contactForm.get('emailMessage').setValue('')"></i-x-circle> -->
+            <i class="material-icons" *ngIf="this.contactForm.get('emailMessage').value" (click)="this.contactForm.get('emailMessage').setValue('')">highlight_off</i>
+        </mat-form-field>
+        <div class="form-error" *ngIf="errors && contactForm.controls['emailMessage'].invalid">{{errors.emailMessage}}</div>
+        <div class="form-error" *ngIf="contactForm.controls['emailMessage'].hasError('required') && contactForm.controls['emailMessage'].touched">
+            Email message required.
+        </div>
+    </div>
+    <div class="form-group form-btn-row">
+        <button class="btn btn-primary btn-lg btn-block shadow rounded-2" [disabled]="disableSubmitBtn" type="submit">Submit Query</button>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoad"></mat-progress-bar>
+</form>

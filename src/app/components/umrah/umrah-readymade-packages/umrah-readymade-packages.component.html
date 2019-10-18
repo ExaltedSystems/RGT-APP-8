@@ -1,0 +1,256 @@
+<mat-tab-group class="mat-accent readymade-pkg" *ngIf="rmuPackages">
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <b>5</b>
+            <mat-icon class="example-tab-icon text-warning">grade</mat-icon>
+        </ng-template>
+        <div class="card-deck col-sm-12" *ngIf="rmuPackages['fiveStar']">
+            <div class="col-sm-3" *ngFor="let pkg of rmuPackages['fiveStar']; let i=index">
+                <div class="package-thumb">
+                    <span class="tag">{{pkg.pkg_title}}</span>
+                    <div class="row">
+                        <div class="col-sm-12 thumbnail">
+                            <a href="https://www.rehmantravel.com/">
+                                <img src="https://www.rehmantravel.com/hotelimages/{{(pkg.mkHotelImage != null ? pkg.mkHotelImage : 'dummy.png')}}" class="img-fluid" alt="Movenpick Hajar Tower Makkah 5*">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <div class="pkg-hotels text-left">
+                            <img src="assets/img/makkah_icon.png" alt="Makkah"> {{pkg.makkahHotelName | slice:0:29}} <br>
+                            <img src="assets/img/madina_icon.png" alt="Madinah"> {{pkg.madinahHotelName | slice:0:29}}
+                        </div>
+                        <div class="center grid-btn">
+                            <div class="btn-item">
+                                <button class="btn btn-sm btn-block btn-primary">PKR {{((pkg.q_room_price * pkg.roe) / 4).toFixed(2)}}</button>
+                            </div>
+                            <div class="btn-item">
+                                <button type="button" class="btn btn-sm btn-block btn-primary dark-btn" data-target="#readymade_pkg_details_popup" data-toggle="modal" (click)="viewReadymadePkg(pkg)">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-deck col-sm-12" *ngIf="!rmuPackages['fiveStar']">
+            <p>&nbsp;</p>
+            <h3 class="form-error">No 5 Star packages exist....</h3>
+        </div>
+    </mat-tab>
+
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <b>4</b>
+            <mat-icon class="example-tab-icon text-warning">grade</mat-icon>
+        </ng-template>
+        <div class="card-deck col-sm-12" *ngIf="rmuPackages['fourStar']">
+            <div class="col-sm-3" *ngFor="let pkg of rmuPackages['fourStar']; let i=index">
+                <div class="package-thumb">
+                    <span class="tag">{{pkg.pkg_title}}</span>
+                    <div class="row">
+                        <div class="col-sm-12 thumbnail">
+                            <a href="https://www.rehmantravel.com/">
+                                <img src="https://www.rehmantravel.com/hotelimages/{{(pkg.mkHotelImage != null ? pkg.mkHotelImage : 'dummy.png')}}" class="img-fluid" alt="Movenpick Hajar Tower Makkah 5*">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <div class="pkg-hotels text-left">
+                            <img src="assets/img/makkah_icon.png" alt="Makkah"> {{pkg.makkahHotelName | slice:0:29}} <br>
+                            <img src="assets/img/madina_icon.png" alt="Madinah"> {{pkg.madinahHotelName | slice:0:29}}
+                        </div>
+                        <div class="center grid-btn">
+                            <div class="btn-item">
+                                <button class="btn btn-sm btn-block btn-primary">PKR {{((pkg.q_room_price * pkg.roe) / 4).toFixed(2)}}</button>
+                            </div>
+                            <div class="btn-item">
+                                <button type="button" class="btn btn-sm btn-block btn-primary dark-btn" data-target="#readymade_pkg_details_popup" data-toggle="modal" (click)="viewReadymadePkg(pkg)">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-deck col-sm-12" *ngIf="!rmuPackages['fourStar']">
+            <p>&nbsp;</p>
+            <h3 class="form-error">No 4 Star packages exist....</h3>
+        </div>
+    </mat-tab>
+
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <b>3</b>
+            <mat-icon class="example-tab-icon text-warning">grade</mat-icon>
+        </ng-template>
+        <div class="card-deck col-sm-12" *ngIf="rmuPackages['threeStar']">
+            <div class="col-sm-3" *ngFor="let pkg of rmuPackages['threeStar']; let i=index">
+                <div class="package-thumb">
+                    <span class="tag">{{pkg.pkg_title}}</span>
+                    <div class="row">
+                        <div class="col-sm-12 thumbnail">
+                            <a href="https://www.rehmantravel.com/">
+                                <img src="https://www.rehmantravel.com/hotelimages/{{(pkg.mkHotelImage != null ? pkg.mkHotelImage : 'dummy.png')}}" class="img-fluid" alt="Movenpick Hajar Tower Makkah 5*">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <div class="pkg-hotels text-left">
+                            <img src="assets/img/makkah_icon.png" alt="Makkah"> {{pkg.makkahHotelName | slice:0:29}} <br>
+                            <img src="assets/img/madina_icon.png" alt="Madinah"> {{pkg.madinahHotelName | slice:0:29}}
+                        </div>
+                        <div class="center grid-btn">
+                            <div class="btn-item">
+                                <button class="btn btn-sm btn-block btn-primary">PKR {{((pkg.q_room_price * pkg.roe) / 4).toFixed(2)}}</button>
+                            </div>
+                            <div class="btn-item">
+                                <button type="button" class="btn btn-sm btn-block btn-primary dark-btn" data-target="#readymade_pkg_details_popup" data-toggle="modal" (click)="viewReadymadePkg(pkg)">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-deck col-sm-12" *ngIf="!rmuPackages['threeStar']">
+            <p>&nbsp;</p>
+            <h3 class="form-error">No 3 Star packages exist....</h3>
+        </div>
+    </mat-tab>
+
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <b>Economy</b>
+        </ng-template>
+        <div class="card-deck col-sm-12" *ngIf="rmuPackages['economy']">
+            <div class="col-sm-3" *ngFor="let pkg of rmuPackages['economy']; let i=index">
+                <div class="package-thumb">
+                    <span class="tag">{{pkg.pkg_title}}</span>
+                    <div class="row">
+                        <div class="col-sm-12 thumbnail">
+                            <a href="https://www.rehmantravel.com/">
+                                <img src="https://www.rehmantravel.com/hotelimages/{{(pkg.mkHotelImage != null ? pkg.mkHotelImage : 'dummy.png')}}" class="img-fluid" alt="Movenpick Hajar Tower Makkah 5*">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <div class="pkg-hotels text-left">
+                            <img src="assets/img/makkah_icon.png" alt="Makkah"> {{pkg.makkahHotelName | slice:0:29}} <br>
+                            <img src="assets/img/madina_icon.png" alt="Madinah"> {{pkg.madinahHotelName | slice:0:29}}
+                        </div>
+                        <div class="center grid-btn">
+                            <div class="btn-item">
+                                <button class="btn btn-sm btn-block btn-primary">PKR {{((pkg.q_room_price * pkg.roe) / 4).toFixed(2)}}</button>
+                            </div>
+                            <div class="btn-item">
+                                <button type="button" class="btn btn-sm btn-block btn-primary dark-btn" data-target="#readymade_pkg_details_popup" data-toggle="modal" (click)="viewReadymadePkg(pkg)">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-deck col-sm-12" *ngIf="!rmuPackages['economy']">
+            <p>&nbsp;</p>
+            <h3 class="form-error">No economy packages exist....</h3>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+
+<div class="modal" id="readymade_pkg_details_popup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">View Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row" *ngIf="pkgPopupDetails">
+                    <div class="col-sm-8">
+                        <table class="table pkg-email-body">
+                            <tbody>
+                                <tr>
+                                    <td class="icon-col"><span class="fa fa-bed"></span></td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0">{{pkgPopupDetails['mk_nights']}} Nights <b>Makkah </b><b class="text-primary">{{pkgPopupDetails['makkahHotelName']}}</b></h5>
+                                        <i class="sub-text">With Breakfast</i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="icon-col"><span class="fa fa-bed"></span></td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0">{{pkgPopupDetails['md_nights']}} Nights <b>Madinah </b>
+                                            <b class="text-primary">{{pkgPopupDetails['madinahHotelName']}}</b></h5>
+                                        <i class="sub-text">With Breakfast</i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="icon-col"><span class="fa fa-car"></span></td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0">{{pkgPopupDetails['vehicleName']}}</h5> <i class="sub-text">{{pkgPopupDetails['sectorName']}}</i></td>
+                                </tr>
+                                <tr>
+                                    <td class="icon-col"><span class="fa fa-vcard"></span></td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0">{{pkgPopupDetails['isVisa'] == 1 ? "Umrah Visa Included" : "Umrah Visa not Included"}}</h5>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td class="icon-col pax-td">
+                                        <span class="fa fa-user"></span><span class="fa fa-user"></span>
+                                    </td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0"><b class="text-primary">2 Persons in a Room </b> <b>PKR {{pkgPopupDetails['d_room_price']}}/-</b></h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="icon-col">
+                                        <span class="fa fa-user"></span><span class="fa fa-user"></span><span class="fa fa-user"></span>
+                                    </td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0"><b class="text-primary">3 Persons in a Room </b> <b>PKR {{pkgPopupDetails['t_room_price']}}/-</b></h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="icon-col">
+                                        <span class="fa fa-user"></span><span class="fa fa-user"></span><span class="fa fa-user"></span><span class="fa fa-user"></span>
+                                    </td>
+                                    <td class="text-col">
+                                        <h5 class="margin-0">
+                                            <b class="text-primary">4 Persons in a Room </b> <b>PKR {{pkgPopupDetails['q_room_price']}}/-</b>
+                                        </h5>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4>Package includes:</h4>
+                        <ol>
+                            <li>Umrah Visa, Private Trasnsport</li>
+                            <li>Accommodation as per Package</li>
+                            <li>Pvt Transport Airport to Hotel</li>
+                        </ol>
+                        <h4 style="color:red">Air Ticket is not Included.</h4>
+                        <h4>Requirements for Umrah Visa</h4>
+                        <ol>
+                            <li>Original Passport.</li>
+                            <li>Photo Copy of ID Card.</li>
+                            <li>2 Photos (Size 4*6 Blue Background).</li>
+                        </ol>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="thumbnail">
+                            <img src="https://www.rehmantravel.com/hotelimages/{{pkgPopupDetails['mkHotelImage'] != null ? pkgPopupDetails['mkHotelImage'] : 'dummy.png'}}" class="img-fluid" alt="{{pkgPopupDetails['makkahHotelName']}}">
+                            <!-- <img src="" alt=""> -->
+                            <div class="thumbnail-caption">{{pkgPopupDetails['makkahHotelName']}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

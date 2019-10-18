@@ -1,0 +1,72 @@
+<app-header></app-header>
+<div *ngIf="page_info && page_info.image">
+    <img class="img-fluid" src="{{baseUrl}}rgtapp/uploads/cms/pages/{{page_info.image}}">
+</div>
+<section class="visa-contents">
+    <div class="container sidebar">
+        <div class="section-title" *ngIf="page_info">
+            <h1>{{ page_info.name }}</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 order-last order-sm-first">
+                <div class="sidebar-list">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <app-amazing-visa-offer></app-amazing-visa-offer>
+                <!-- <div class="sidebar-subscribe mt-4">
+                    <p class="mb-0">Subscribe to Get Amazing Offers</p>
+                    <h3>Tour Alerts</h3>
+                    <button class="btn btn-secondary">Subscribe</button>
+                </div> -->
+            </div>
+            <div class="col-sm-9 order-sm-2" *ngIf="page_info">
+                <!-- <h1>{{ page_info.name }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a routerLink="/">Home</a>
+                        </li>
+                        <li class="breadcrumb-item" *ngIf="page_info.parent">
+                           {{ page_info.parent.navbarTitle }}
+                        </li>
+                        <li class="breadcrumb-item active">{{ page_info.name }}</li>
+                    </ol>
+                </nav> -->
+
+                <!--listing start-->
+                <div class="row" *ngIf="page_info.subPages">
+                    <div class="col-sm-4" *ngFor="let item of page_info.subPages">
+                        <a routerLink="/{{ item.urlLink }}" title="{{item.navbarTitle}}">
+                            <img class="img-fluid" alt="{{item.navbarTitle}} Rehman Travels" src="{{ item.thumbnail != null ? baseUrl+'rgtapp/uploads/cms/pages/thumbnails/'+item.thumbnail : baseUrl+'rgtapp/uploads/no-image-default.png' }}">
+                        </a>
+                        <div class="tour-card-title mb-2">
+                            <h5><a routerLink="/{{ item.urlLink }}" title="{{item.navbarTitle}}" style="color:#fff;">{{item.navbarTitle}}</a></h5>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="card-deck" *ngIf="page_info.subPages">
+                    <div *ngFor="let item of page_info.subPages" class="col-sm-4">
+                        <div class="visa-card card shadow">
+                            <img class="card-img-top img-fluid" src="{{ item.thumbnail != null ? baseUrl+'rgtapp/uploads/cms/pages/thumbnails/'+item.thumbnail : baseUrl+'rgtapp/uploads/no-image-default.png' }}" alt="{{ item.countryName }} Rehman Travels">
+                            <div class="card-body">
+                                <h5 class="card-title">{{item.navbarTitle}}</h5>
+                                <p></p>
+                                <a href="#" class="btn btn-primary rounded-0 shadow" routerLink="/{{ item.urlLink }}">View Details</a>
+                            </div>
+                        </div>
+                        <div class="w-100 m-3"></div>
+                    </div>
+                </div> -->
+                <!--listing end-->
+                <div *ngIf="page_info.description" [innerHTML]="page_info.description | iframe"></div>
+                <p>&nbsp;</p>
+                <div class="main-container-callback d-none d-sm-block">
+                    <app-request-callback-form></app-request-callback-form>
+                </div>
+                <p>&nbsp;</p>
+                <app-related-links></app-related-links>
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer></app-footer>

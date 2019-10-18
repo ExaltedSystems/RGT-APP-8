@@ -1,0 +1,28 @@
+.pkg-email-body .table td,
+.table th {
+    padding: .5rem !important;
+}
+
+.table td,
+.table th {
+    padding: .5rem !important;
+}
+
+.pax-td {
+    width: 12%;
+}
+
+.modal-dialog {
+    max-width: 70% !important;
+    width: 70% !important;
+}
+
+@media (max-width: 768px) {
+    .pax-td {
+        width: 22%;
+    }
+    .modal-dialog {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}

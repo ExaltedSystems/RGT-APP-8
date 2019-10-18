@@ -1,0 +1,294 @@
+<app-header></app-header>
+<!-- Image Slider -->
+<div class="mian-slider">
+    <!-- Search Form -->
+    <div class="main-search-form pt-sm-3 pt-5 pt-md-5">
+        <div class="container-fluid">
+            <div class="row card-deck">
+                <div class="col-sm-12 col-xl-10 offset-xl-1 form-col">
+                    <div class="main-search-form-container">
+                        <ul class="nav nav-tabs border-bottom-0" id="myTab" role="tablist">
+                            <li class="nav-item mb-0">
+                                <a class="nav-link rounded-0 border-0 active search-form-tab" id="flights-tab" data-toggle="tab" href="#flight-tabpane" (click)="showHideSearchFormTabs($event, 'flights-tab', 'flight-tabpane')">Flights</a>
+                            </li>
+                            <li class="nav-item mb-0">
+                                <a class="nav-link rounded-0 border-0 search-form-tab" id="hotels-tab" data-toggle="tab" href="#hotel-tabpane" (click)="showHideSearchFormTabs($event, 'hotels-tab', 'hotel-tabpane')">Hotels</a>
+                            </li>
+                            <li class="nav-item mb-0"><a routerLink="/umrah/design-your-package" class="nav-link rounded-0 border-0">Umrah Calculator</a></li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="flight-tabpane" role="tabpanel" aria-labelledby="flights-tab">
+                                <app-flights-search></app-flights-search>
+                            </div>
+                            <div class="tab-pane fade" id="hotel-tabpane" role="tabpanel" aria-labelledby="hotel-tab">
+                                <app-hotel-search-form></app-hotel-search-form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /Row -->
+        </div>
+        <!-- /Container -->
+    </div>
+    <!-- /Search Form -->
+
+    <img *ngIf="!isMobile" src="assets/slider/home2-header.jpg" class="img-fluid d-none d-sm-block" alt="Background Image Rehman Travels">
+</div>
+
+<section class="subscribe-deal">
+    <div class="container">
+        <mat-card class="p-2 p-sm-0 mat-card">
+            <div class="row d-block d-sm-flex align-items-center">
+                <div class="col-sm-4">
+                    <img alt="Subscribe Image Rehman Travels" class="img-fluid mb-3 mb-sm-0" src="assets/img/Subscribe-button.png">
+                </div>
+                <div class="col-sm-8">
+                    <app-subscribe></app-subscribe>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</section>
+<!-- Deals -->
+<section class="deals-section" *ngIf="popularDeals">
+    <div class="container">
+        <div class="section-title">
+            <h1>Make your best deals</h1>
+            <!-- <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio, natus rerum unde alias quam fuga eos esse.</p> -->
+        </div>
+
+        <div class="card-deck">
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngFor="let deal of popularDeals;">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/{{deal.image}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{deal.name}}</h5>
+                    <p class="card-text">{{deal.shortDescription}}</p>
+                    <!-- <p class="card-text">
+                        <small class="text-muted">Last updated 3 mins ago</small>
+                    </p> -->
+                    <a class="btn btn-outline-primary btn-sm shadow rounded-0" routerLink="/{{deal.URL}}">View Deal</a>
+                </div>
+            </div>
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngIf="popularDeals.length == 1">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/uploads/no-image-default.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Comming Soon</h5>
+                    <p class="card-text"></p>
+                    <!-- <p class="card-text">
+                        <small class="text-muted">Last updated 3 mins ago</small>
+                    </p>
+                    <button class="btn btn-outline-primary btn-sm shadow rounded-0">View Deal</button> -->
+                </div>
+            </div>
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngIf="popularDeals.length == 1">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/uploads/no-image-default.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Comming Soon</h5>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngIf="popularDeals.length == 1">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/uploads/no-image-default.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Comming Soon</h5>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngIf="popularDeals.length == 2">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/uploads/no-image-default.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Comming Soon</h5>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngIf="popularDeals.length == 2">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/uploads/no-image-default.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Comming Soon</h5>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0" *ngIf="popularDeals.length == 3">
+                <img class="card-img-top rounded-0" src="{{baseUrl}}rgtapp/uploads/no-image-default.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Comming Soon</h5>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-details-button">
+            <button class="btn btn-primary rounded-0 shadow">View All Deals</button>
+        </div>
+
+    </div>
+</section>
+<!-- /Deals -->
+
+<!-- Subscribe for deals -->
+<!-- <section class="subscribe-deal">
+    <h1 class="text-center">Subscribe For Deals</h1>
+    <app-subscribe></app-subscribe>
+</section> -->
+<!-- /Subscribe for deals -->
+
+<!-- Top Destinations -->
+<section class="top-destinations">
+    <div class="container">
+        <div class="section-title">
+            <h1>top destinations</h1>
+        </div>
+
+        <div class="card-deck">
+            <div class="card shadow rounded-0 mb-sm-4 mb-lg-0 home-visa-list" *ngFor="let item of popularVisa;">
+                <img class="card-img-top rounded-0" src="{{ baseUrl+item.visaThumbnail }}" alt="{{ item.countryName }} Rehman Travels">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.countryName }}</h5>
+                    <p class="card-text">{{ item.shortDescription.substring(0,90) }} .....</p>
+                    <p class="card-title">{{ item.currencyCode }} {{ item.visaPrice }} <a class="btn btn-outline-primary btn-sm pull-right shadow rounded-0" routerLink="{{ item.visaUrl }}">View Details</a></p>
+
+                </div>
+            </div>
+        </div>
+        <div class="section-details-button">
+            <button class="btn btn-primary rounded-0 shadow" routerLink="/visa">View All Destinations</button>
+        </div>
+    </div>
+</section>
+<!-- /Top Destinations -->
+
+<!-- Services -->
+<section class="services">
+    <div class="container">
+        <div class="section-title">
+            <h1>what we offer</h1>
+            <!-- <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio, natus rerum unde alias quam fuga eos esse.</p> -->
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-lg-4">
+                <div class="service">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="service-icon bg-primary text-center p-3 p-sm-1 p-md-3 text-white">
+                                <img src="assets/img/online-ticketing-ic.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h2 class="service-title">Online Tickets</h2>
+                            <p class="service-text">Rehman Travel offers online ticket reservation and booking option for domestic as well as international flights for travelers wishing to book flights from the comfort of their own desk.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="service">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="service-icon bg-primary text-center p-3 p-sm-1 p-md-3 text-white">
+                                <img src="assets/img/hotel-reservation-ic.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h2 class="service-title">Online Hotel Reservation</h2>
+                            <p class="service-text">Booking of hotels through Rehman Travel online system is convenient and offers you a range of options from star rating to location or searching a specific hotel by name.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="service">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="service-icon bg-primary text-center p-3 p-sm-1 p-md-3 text-white">
+                                <img src="assets/img/world-tour-ic.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h2 class="service-title">World Tours</h2>
+                            <p class="service-text">Rehman Travel offers you world tours at most competitive rates to destinations ranging from Dubai, Singapore, Turkey, Azerbaijan, Europe and America. Rehman Travels offers honeymoon and family packages including corporate tours.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="service">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="service-icon bg-primary text-center p-3 p-sm-1 p-md-3 text-white">
+                                <img src="assets/img/visa-icon.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h2 class="service-title">Online Visa Processing</h2>
+                            <p class="service-text">Rehman Travel has online visa processing facility for a number of countries like Azarbaijan, Turkey and Dubai. Rehman Travels provides guidance and assistance in applying for all e-visa countries and their experienced team
+                                is ever willing to provide help to travellers wishing to apply through e-visa.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="service">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="service-icon bg-primary text-center p-3 p-sm-1 p-md-3 text-white">
+                                <img src="assets/img/hajj-umrah-ic.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h2 class="service-title">Executive Hajj & Umrah</h2>
+                            <p class="service-text">Do you want to experience a holy trip in luxury? Well, you can try our executive Umrah package because it provides you with top notch facilities and amazing traveling experience Our executive packages will take you to five-star
+                                hotels, amazing cuisines, pick and drop services in air-conditioned cars and so much more
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-4">
+                <div class="service">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="service-icon bg-primary text-center p-3 p-sm-1 p-md-3 text-white">
+                                <img src="assets/img/pakistan-tour-ic.png" class="img-fluid" alt="">
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <h2 class="service-title">Pakistan Tours</h2>
+                            <p class="service-text">Rehman Holidays a Tour Company is a subsidiary of Rehman Group of Companies offering Pakistan Tours and Travels in Pakistan. The Pakistan travel packages range from northern area tour packages, Summer Tour Packages to Winter
+                                Tour Packages and also including City tours and Historical area Tours.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- /Services -->
+
+
+<!-- About -->
+<section class="about-section">
+    <div class="container">
+        <div class="section-title">
+            <h1>we are well organised</h1>
+            <p>Rehman Travels is an established name for Umrah and Hajj travel where we endeavour to provide the best value for money and comfort during your stay in Saudi Arabia.</p>
+        </div>
+
+        <p>Rehmantravel.com is a leading online travel agency. Our services include Flights Reservation/Airline Tickets, Travel Insurance, Hotel Reservation System, Visa Services, Umrah and Hajj. All our rates are competitive rates. We are known for After
+            Sale Services. We Rehmantravel.com are always working for the special deals to facilitate our valuable clients. These are the lowest and market competitive offers for UK, USA, Canada & Australia based frequent travelers. Rehmantravel.com is
+            offering all the transaction via online Banking. Rehmantravel.com has its user friendly interface and you can purchase online ticket in just few clicks. Moreover our design is also compatible to fit on every desired device which helps user
+            in finding the lowest rates. All you need to do is enter your travelling dates and destinations, rest Rehmantravel.com will find you with the lowest airfares. You can also filter/customize your search by selecting the specific airlines.</p>
+        <p>Rehmantravel.com has its head office in Islamabad and branches available in major cities; i.e. Lahore, Karachi, Peshawar, Attock, Malakand and many more. We have also options to purchase products by using credit card or online banking. Make your
+            booking now and start your memorable journey. We always have special deals, keep visiting rehmantravel.com. We have cheapest rates of all Airlines like PIA, Emirates Airline, Saudi Airline, Thai Airways, Qatar Airways, Oman Air, Fly Dubai,
+            Air Lanka, Air China, Nas Airline and lot others. We have more than 400 Airlines listed and you will get the best match as per your need. We are not limited to only GDS airlines you can also avail our services for NON GDS airlines like AirBlue,
+            Shaheen Air, Air Asia, Serene Air etc. We are open for 7 days a week from 9AM till 12AM. You can call our UAN number 051 111 786 785 for further assistance.</p>
+        <app-popular-airlines-and-hotels></app-popular-airlines-and-hotels>
+    </div>
+    <!-- /container -->
+</section>
+<!-- /About -->
+<app-footer></app-footer>

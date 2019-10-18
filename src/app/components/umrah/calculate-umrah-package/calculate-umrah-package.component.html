@@ -1,0 +1,473 @@
+<app-header></app-header>
+<div *ngIf="page_info && page_info.image">
+    <img class="img-fluid" src="{{baseUrl}}rgtapp/uploads/cms/pages/{{page_info.image}}">
+</div>
+<section class="visa-contents">
+    <div class="container sidebar">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="section-title p-1 mb-1" *ngIf="page_info">
+                    <h1>{{ page_info.name }}</h1>
+                </div>
+                <!-- <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a routerLink="/">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Design Umrah Package</li>
+                    </ol>
+                </nav> -->
+                <div class="box box-warning tour-calc">
+                    <mat-horizontal-stepper [linear]="isLinear" #stepper>
+                        <mat-step [stepControl]="umrahCalculatorForm">
+                            <form [formGroup]="umrahCalculatorForm" class="custom-material-form position-relative" (submit)="calculateHotelPkg(umrahCalculatorForm.value)">
+                                <ng-template matStepLabel>Create</ng-template>
+                                <div class="row--">
+                                    <div class="col-sm-12">
+                                        <div class="box box-warning">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Create Your Package</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="form-group row mb-0">
+                                                    <div class="col-sm-1 col-6 max-w-10 ml-sm-2 ml-0 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="totalAdults" placeholder="Adults *" panelClass="mat-select-opt" (selectionChange)="__setPaxVehicle()">
+                                                                <mat-option *ngFor="let number of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" [value]="number">
+                                                                    {{number}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-2 col-6 max-w-13 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="totalChildrens" placeholder="Children (02-10 years)" panelClass="mat-select-opt" (selectionChange)="__setPaxVehicle()">
+                                                                <mat-option *ngFor="let number of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" [value]="number">
+                                                                    {{number}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-2 max-w-11 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="totalInfants" placeholder="Infant (02 years)" panelClass="mat-select-opt" (selectionChange)="__setPaxVehicle()">
+                                                                <mat-option *ngFor="let number of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" [value]="number">
+                                                                    {{number}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-2 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <input matInput placeholder="Name" class="rounded-5" formControlName="name">
+                                                            <i class="material-icons" *ngIf="this.umrahCalculatorForm.get('name').value" (click)="this.umrahCalculatorForm.get('name').setValue('')">highlight_off
+                                                            </i>
+                                                            <mat-error *ngIf="umrahCalculatorForm.controls['name'].hasError('required') && umrahCalculatorForm.controls['name'].touched">Name is required</mat-error>
+                                                            <mat-error *ngIf="umrahCalculatorForm.controls['name'].invalid">Name is invalid</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-3 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <input matInput placeholder="Email Address *" class="rounded-5" formControlName="email">
+                                                            <i class="material-icons" *ngIf="this.umrahCalculatorForm.get('email').value" (click)="this.umrahCalculatorForm.get('email').setValue('')">highlight_off
+                                                            </i>
+                                                            <mat-error *ngIf="umrahCalculatorForm.controls['email'].hasError('required') && umrahCalculatorForm.controls['email'].touched">Email address required.</mat-error>
+                                                            <mat-error *ngIf="umrahCalculatorForm.controls['email'].invalid && umrahCalculatorForm.controls['email'].value != ''">Email address not valid.</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-sm-2 max-w-15 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <input matInput placeholder="Contact Number *" class="rounded-5" formControlName="phone" minlength="10" maxlength="19">
+                                                            <i class="material-icons" *ngIf="this.umrahCalculatorForm.get('phone').value" (click)="this.umrahCalculatorForm.get('phone').setValue('')">highlight_off
+                                                            </i>
+                                                            <mat-error *ngIf="umrahCalculatorForm.controls['phone'].hasError('required') && umrahCalculatorForm.controls['phone'].touched">Contact Number required</mat-error>
+                                                            <mat-error *ngIf="umrahCalculatorForm.controls['phone'].invalid && umrahCalculatorForm.controls['phone'].value != ''">Contact Number invalid</mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <div formArrayName="hotelRows" *ngFor="let item of umrahCalculatorForm.get('hotelRows')['controls']; let i = index;" class="hotel-rows">
+                                                    <div formGroupName="{{i}}" class="form-group row mb-0 p-sm-2">
+                                                        <input type="hidden" formControlName="ID">
+                                                        <div class="col-sm-2 locations p-sm-1">
+                                                            <mat-form-field class="form-control border-input mb-3 shadow">
+                                                                <mat-select formControlName="locations" placeholder="Location" panelClass="mat-select-opt" (selectionChange)="getHotelByLocation($event, i)">
+                                                                    <mat-option value="Makkah">Makkah</mat-option>
+                                                                    <mat-option value="Madinah">Madinah</mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-3 p-sm-1">
+                                                            <mat-form-field class="form-control border-input mb-3 shadow">
+                                                                <input matInput formControlName="hotelName" [matAutocomplete]="auto" placeholder="Hotel Name *">
+                                                                <mat-autocomplete #auto="matAutocomplete">
+                                                                    <mat-option *ngFor="let option of filteredOptions[i] | async" [value]="option.hotelName" (onSelectionChange)="onSelectionChange($event, i)">
+                                                                        {{ option.hotelName }}
+                                                                    </mat-option>
+                                                                </mat-autocomplete>
+                                                                <i class="material-icons" *ngIf="!this.umrahCalculatorForm.get('hotelRows')['controls'][i].controls['hotelName'].value">arrow_drop_down </i>
+                                                                <i class="material-icons" *ngIf="this.umrahCalculatorForm.get('hotelRows')['controls'][i].controls['hotelName'].value" (click)="this.umrahCalculatorForm.get('hotelRows')['controls'][i].controls['hotelName'].setValue('');this.umrahCalculatorForm.get('hotelRows')['controls'][i].controls['ID'].setValue('')">highlight_off
+                                                                </i>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-1 col-6 w-11 p-sm-1">
+                                                            <mat-form-field class="form-control border-input mb-3 shadow" style="font-size: 12px;">
+                                                                <input matInput [matDatepicker]="tourCheckIn" formControlName="tourCheckIn" (click)="tourCheckIn.open()" (dateChange)="calculateDate(i)" class="border-left-0 rounded-0" placeholder="Check In *" [min]="currDate" readonly>
+                                                                <mat-datepicker-toggle matSuffix style="font-size: 16px;" [for]="tourCheckIn"></mat-datepicker-toggle>
+                                                                <!-- <mat-icon>calendar_today</mat-icon> -->
+                                                                <mat-datepicker touchUi #tourCheckIn></mat-datepicker>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-1 col-6 w-11 p-sm-1">
+                                                            <mat-form-field class="form-control border-input mb-3 shadow" style="font-size: 12px;">
+                                                                <input matInput [matDatepicker]="tourCheckOut" formControlName="tourCheckOut" (click)="tourCheckOut.open()" (dateChange)="calculateDate(i)" class="border-left-0 rounded-0" placeholder="Check Out" [min]="currDate" readonly>
+                                                                <mat-datepicker-toggle matSuffix style="font-size: 14px;" [for]="tourCheckOut"></mat-datepicker-toggle>
+                                                                <mat-datepicker touchUi #tourCheckOut></mat-datepicker>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-3 p-sm-1">
+                                                            <div class="input-group border-input dropdown mb-4 mb-sm-0 shadow" id="dropdown_btn_{{i}}">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text rounded-0">
+                                                                        <i class="material-icons">group</i>
+                                                                    </span>
+                                                                </div>
+                                                                <button class="form-control border-left-0 rounded-0 text-left dropdown-toggle form-dropdown-btn" data-toggle="dropdown" id="flightPaxDropdownMenu" type="button">
+                                                                    <small class="d-block">No of Rooms</small>
+                                                                    <p class="d-inline-block mb-0" id="rooms_str_{{i}}">
+                                                                        1 Double, 0
+                                                                        Triple, 0 Quad</p>
+                                                                    <i class="material-icons pull-right">expand_more</i>
+                                                                </button>
+                                                                <div aria-labelledby="flightPaxDropdownMenu" class="dropdown-menu shadow rounded-0 p-3" (click)="$event.stopPropagation()" id="drowdown_list_{{i}}">
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-3 text-center">
+                                                                            <div class="input-group-prepend">
+                                                                                <button class="btn btn-sm btn-secondary dark-btn rounded-0" type="button" (click)="decrementNumber('dblRoom', i)">
+                                                                                    <i class="material-icons">remove</i>
+                                                                                </button>
+                                                                            </div>
+                                                                            <span class="form-control" id="dblRoom_str_{{i}}">{{dblRoom}}
+                                                                                Double</span>
+                                                                            <input formControlName="dblRoom" type="hidden" value="{{dblRoom}}">
+                                                                            <div class="input-group-append">
+                                                                                <button class="btn btn-sm btn-secondary dark-btn rounded-0" type="button" (click)="incrementNumber('dblRoom', i)">
+                                                                                    <i class="material-icons">add</i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-3 text-center">
+                                                                            <div class="input-group-prepend">
+                                                                                <button class="btn btn-sm btn-secondary dark-btn rounded-0" type="button" (click)="decrementNumber('tplRoom', i)">
+                                                                                    <i class="material-icons">remove</i>
+                                                                                </button>
+                                                                            </div>
+                                                                            <span class="form-control" id="tplRoom_str_{{i}}">{{tplRoom}}
+                                                                                Triple</span>
+                                                                            <input formControlName="tplRoom" type="hidden" value="0">
+                                                                            <div class="input-group-append">
+                                                                                <button class="btn btn-sm btn-secondary dark-btn rounded-0" type="button" (click)="incrementNumber('tplRoom', i)">
+                                                                                    <i class="material-icons">add</i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-3 text-center">
+                                                                            <div class="input-group-prepend">
+                                                                                <button class="btn btn-sm btn-secondary dark-btn rounded-0" type="button" (click)="decrementNumber('qdRoom', i)">
+                                                                                    <i class="material-icons">remove</i>
+                                                                                </button>
+                                                                            </div>
+                                                                            <span class="form-control" id="qdRoom_str_{{i}}">{{qdRoom}}
+                                                                                Quad</span>
+                                                                            <input formControlName="qdRoom" type="hidden" value="0">
+                                                                            <div class="input-group-append">
+                                                                                <button class="btn btn-sm btn-secondary dark-btn rounded-0" type="button" (click)="incrementNumber('qdRoom', i)">
+                                                                                    <i class="material-icons">add</i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- <div class="dropdown-divider"></div> -->
+                                                                    <p class="form-error" id="roomErrors_{{i}}">
+                                                                        {{roomErrors}}</p>
+                                                                    <div class="dropdown-divider" *ngIf="roomErrors">
+                                                                    </div>
+                                                                    <a class="float-right btn btn-success dark-btn text-white" (click)="closeDropDown($event, i)">
+                                                                        <!-- <i-check class="dropdown-feather float-left m-1">
+                                                                        </i-check> -->
+                                                                        <span class="float-right">Done</span>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-1 w-11 p-sm-1">
+                                                            <mat-form-field class="form-control border-input mb-3 shadow">
+                                                                <input placeholder="Total Nights" class="rounded-5" formControlName="totalNights" readonly matInput>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <div class="col-sm-1 col-6 p-sm-1" *ngIf="i>0" style="max-width: 5%;">
+                                                            <button type="button" (click)="removeTourRow(i);" class="btn btn-danger p-2 shadow rounded-5">
+                                                                <i class="material-icons"></i>
+                                                            </button>
+                                                        </div>
+                                                        <p id="duplicate_error_{{i}}" class="form-error"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-1 max-w-10 ml-sm-2 ml-0 p-sm-1">
+                                                        <button type="button" (click)="addMoreTourRows();" class="btn btn-info dark-btn p-2 shadow rounded-5">
+                                                            <i class="material-icons">control_point</i> Add More ...
+                                                        </button>
+                                                    </div>
+                                                    <!-- <div class="col-sm-2 col-6 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="isVisa" placeholder="Visa" panelClass="mat-select-opt">
+                                                                <mat-option value="1">Yes</mat-option>
+                                                                <mat-option value="0">No</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div> -->
+                                                    <div class="col-sm-1 col-6 p-sm-1">
+                                                        <!--  <br> -->
+                                                        <mat-checkbox formControlName="isVisa"> Visa</mat-checkbox>
+                                                    </div>
+                                                    <!-- <div class="col-sm-2 col-6 p-sm-1">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="isTransport" placeholder="Transport" panelClass="mat-select-opt" (selectionChange)="setTransport($event)">
+                                                                <mat-option value="1">Yes</mat-option>
+                                                                <mat-option value="0">No</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div> -->
+                                                    <div class="col-sm-2 col-6 p-sm-1">
+                                                        <!-- <br> -->
+                                                        <mat-checkbox formControlName="isTransport" (change)="setTransport($event)"> Transport</mat-checkbox>
+                                                    </div>
+                                                    <div class="col-sm-4 p-sm-1" *ngIf="isTransport">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="sectorId" id="sectorId" placeholder="-- Select Sector --" panelClass="mat-select-opt" (selectionChange)="getOptionText($event, 'sector')">
+                                                                <mat-option *ngFor="let s of sectorLists" [value]="s.ID">{{s.sector}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <input type="hidden" formControlName="sectorName">
+                                                    <input type="hidden" formControlName="vehicleName">
+                                                    <div class="col-sm-3 max-w-23 p-sm-1" *ngIf="isTransport">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="vehicleId" id="vehicleId" placeholder="-- Select Vehicle --" panelClass="mat-select-opt" (selectionChange)="getOptionText($event, 'vehicle')">
+                                                                <mat-option *ngFor="let v of vehicleLists" [value]="v.ID">{{v.vehicleType}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="form-group row mb-2">
+                                                    <div class="col-sm-5" *ngIf="umrahCalculatorForm.get('isTransport').value">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="sectorId" id="sectorId" placeholder="Select Sector" panelClass="mat-select-opt" (selectionChange)="getOptionText($event, 'sector')">
+                                                                <mat-option *ngFor="let s of sectorLists" [value]="s.ID">{{s.sector}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <input type="hidden" formControlName="sectorName">
+                                                    <input type="hidden" formControlName="vehicleName">
+                                                    <div class="col-sm-3" *ngIf="umrahCalculatorForm.get('isTransport').value">
+                                                        <mat-form-field class="form-control border-input mb-3 shadow">
+                                                            <mat-select formControlName="vehicleId" id="vehicleId" placeholder="Select Vehicle" panelClass="mat-select-opt" (selectionChange)="getOptionText($event, 'vehicle')">
+                                                                <mat-option *ngFor="let v of vehicleLists" [value]="v.ID">{{v.vehicleType}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div> -->
+                                                <div class="form-error" [innerHTML]="errorMsg | safeHtml"></div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-12 center">
+                                                        <button class="btn btn-success p-2 mr-2 shadow rounded-5" *ngIf="confirmed" (click)="confirmPkg()" matStepperNext>
+                                                            <i class="material-icons">check_box</i> Confirm
+                                                        </button>
+                                                        <button class="btn btn-primary dark-btn p-2 mr-2 shadow rounded-5" matStepperNext>
+                                                            <i class="material-icons">pageview</i> Preview
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-step>
+                        <mat-step>
+                            <ng-template matStepLabel>Preview Package</ng-template>
+                            <div class="col-sm-12">
+                                <div class="box box-warning">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Preview Package</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                        <i class="fa fa-chevron-left d-block d-sm-none pull-left"></i>
+                                        <i class="fa fa-chevron-right d-block d-sm-none pull-right"></i>
+                                        <div class="table-responsive" id="print-pkg-div" *ngIf="pkgPreview">
+                                            <table class="table table-bordered table-striped">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <img src="https://rehmantravel.com/img/holiday-letter-head.png" width="100%" alt="" style="border-bottom:solid 1px;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="22" bgcolor="#00AEEF" colspan="6" align="center"><b>UBC Booking</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="22" class="blue" align="center"><b>Inquiry No.</b></td>
+                                                    <td height="22" class="blue" colspan="2" align="center"><b>Name</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Email</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Contact Number</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Date / Time</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].inquiryNum}}</td>
+                                                    <td height="22" colspan="2" align="center">{{pkgPreview['postData'].name}}</td>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].email}}</td>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].phone}}</td>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].createDate | date : 'MMM dd, yyyy hh:mm a'}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="22" class="blue" rowspan="2" style="padding:3px;vertical-align: middle;width: 9%" align="center">
+                                                        <b>Passengers</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Adults</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Children</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Infant</b></td>
+                                                    <td height="22" class="blue" colspan="2" align="center"><b>Total Passengers</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].totalAdults}}</td>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].totalChildrens}}</td>
+                                                    <td height="22" align="center">{{pkgPreview['postData'].totalInfants}}</td>
+                                                    <td height="22" colspan="2" align="center"> {{pkgPreview['postData'].totalPax}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="22" bgcolor="#00AEEF" colspan="6" align="center"><b>Accommodation Details</b></td>
+                                                </tr>
+                                            </table>
+                                            <table class="table table-bordered table-striped">
+                                                <tr>
+                                                    <td height="22" class="blue" align="center" style="width: 9%"><b>Location</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Hotel Name</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Type</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Basis</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Check In</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Check Out</b></td>
+                                                    <td height="22" class="blue" align="center" *ngIf="pkgPreview['postData'].dblRooms > 0"><b>Double</b></td>
+                                                    <td height="22" class="blue" align="center" *ngIf="pkgPreview['postData'].tplRooms > 0"><b>Triple</b></td>
+                                                    <td height="22" class="blue" align="center" *ngIf="pkgPreview['postData'].qdRooms > 0"><b>Quad</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Nights</b></td>
+                                                    <td height="22" class="blue" align="center"><b>Room Price</b></td>
+                                                </tr>
+                                                <tr *ngFor="let h of pkgPreview['hotelData'];let i=index">
+                                                    <td height="22" align="center">{{h.location}}</td>
+                                                    <td height="22" align="center">{{h.hotelName}}</td>
+                                                    <td height="22" align="center">{{h.typeId}} <img src="{{baseUrl}}assets/img/star-img.png"></td>
+                                                    <td height="22" align="center">{{h.roomType}}</td>
+                                                    <td height="22" align="center">{{h.checkInDate | date : 'mediumDate'}}</td>
+                                                    <td height="22" align="center">{{h.checkOutDate | date : 'mediumDate'}}</td>
+                                                    <td height="22" align="center" *ngIf="pkgPreview['postData'].dblRooms > 0">{{h.dblRoom}}</td>
+                                                    <td height="22" align="center" *ngIf="pkgPreview['postData'].tplRooms > 0">{{h.tplRoom}}</td>
+                                                    <td height="22" align="center" *ngIf="pkgPreview['postData'].qdRooms > 0">{{h.qdRoom}}</td>
+                                                    <td height="22" align="center">{{h.totalNights}}</td>
+                                                    <td height="22" align="center">SAR {{pkgPreview['priceData'][i].totalRoomsPrice}}</td>
+                                                </tr>
+                                                <!-- </table>
+                                            <table class="table table-bordered table-stripped"> -->
+                                                <tr>
+                                                    <td align="right" class="blue" [attr.colspan]="tNightsVisaCol"><b>Total Nights</b></td>
+                                                    <td align="center" height="22"><b>{{pkgPreview['postData'].grandTotalNights}}</b></td>
+                                                    <td align="center" height="22">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right" class="blue" [attr.colspan]="tCostCol"><b>Total Room Prices (Saudi Riyal)</b></td>
+                                                    <td align="center" height="22"><b><span class="blue">SAR: </span>{{pkgPreview['postData'].grandTotalRoomPrice}}</b></td>
+                                                </tr>
+                                                <!-- </table>
+                                            <table class="table table-bordered table-stripped"> -->
+                                                <tr>
+                                                    <td class="blue" width="9%"><b>Visa</b></td>
+                                                    <td align="center" [attr.colspan]="visaCol" class="blue">
+                                                        <b class="text-success" *ngIf="pkgPreview['postData'].isVisa">You have selected Umrah Visa for {{pkgPreview['postData'].totalPax}} Person(s)</b>
+                                                        <b class="text-danger" *ngIf="!pkgPreview['postData'].isVisa">You have not select Umrah Visa</b></td>
+                                                    <td align="center" height="22"><b>SAR {{pkgPreview['postData'].visaPrice}}</b></td>
+                                                </tr>
+                                                <tr *ngIf="pkgPreview['postData'].isTransport">
+                                                    <td class="blue" width="9%"><b>Transport</b></td>
+                                                    <td align="center" colspan="3"><b>{{pkgPreview['postData'].vehicleName}}</b></td>
+                                                    <td align="center" [attr.colspan]="sectorCol"><b>{{pkgPreview['postData'].sectorName}}</b></td>
+                                                    <td align="center" height="22"><b>SAR {{pkgPreview['postData'].transportPrice}}</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="blue" align="right" [attr.colspan]="tCostCol"><b>Total Cost Of Your Desire Package</b></td>
+                                                    <td align="center" height="22"><b class="blue">SAR:</b>{{pkgPreview['postData'].totalPackageCost}}</td>
+                                                </tr>
+                                            </table>
+                                            <table class="table table-bordered" style="font-family:arial !important; font-size:0.6em !important;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td width="40%" style="padding-left: 5px; vertical-align:top;">
+                                                            <!-- <h5 class="blue" style="margin-bottom:0px !important; border:solid 1px; padding:3px; width:47%;">
+                                                                <b>Terms & Conditions</b></h5>
+                                                            <span [innerHTML]="pkgPreview['postData'].termsCondition"></span> -->
+                                                            <h5 class="blue" style="margin-bottom:0px !important; border:solid 1px; padding:3px;"><b>Package Include</b></h5>
+                                                            <span [innerHTML]="pkgPreview['postData'].pkgIncludes | safeHtml"></span>
+                                                            <h5 class="blue" style="margin-bottom:0px !important; border:solid 1px; padding:3px;">
+                                                                <b>Requirements</b></h5>
+                                                            <span [innerHTML]="pkgPreview['postData'].requirements | safeHtml"></span>
+                                                        </td>
+                                                        <td width="60%" style="border-left: solid 1px; padding-right:5px;  vertical-align:top;">
+                                                            <h5 class="blue" style="margin-bottom:0px !important; border:solid 1px; padding:3px">
+                                                                <b>Note</b></h5>
+                                                            <span [innerHTML]="pkgPreview['postData'].notes | safeHtml"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <img src="https://www.rehmantravel.com/img/holiday-footer.png" width="100%" style="border-bottom:solid 1px;">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group row">
+                                            <div class="col-sm-12 center">
+                                                <button class="btn btn-info dark-btn mr-2" *ngIf="confirmed" matStepperPrevious>
+                                                    <i class="material-icons">skip_previous</i> Back
+                                                </button>
+                                                <button class="btn btn-success mr-2" *ngIf="confirmed" (click)="confirmPkg()">
+                                                    <i class="material-icons">check_box</i> Confirm
+                                                </button>
+                                                <button class="btn btn-warning" (click)="printPkg('print-pkg-div')">
+                                                    <i class="material-icons">print</i> Print
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-step>
+                    </mat-horizontal-stepper>
+                    <app-umrah-readymade-packages></app-umrah-readymade-packages>
+                    <p>&nbsp;</p>
+                    <h3 *ngIf="page_info">{{page_info.name}}</h3>
+                    <div *ngIf="page_info" [innerHTML]="page_info.description"></div>
+                    <p>&nbsp;</p>
+                    <div class="main-container-callback">
+                        <app-request-callback-form></app-request-callback-form>
+                    </div>
+                    <p>&nbsp;</p>
+                    <app-related-links></app-related-links>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer></app-footer>

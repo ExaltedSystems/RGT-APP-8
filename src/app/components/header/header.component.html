@@ -1,0 +1,41 @@
+<div class="top-bar border-bottom box-shadow bg-dark" id="fiexed-top">
+    <div class="container">
+        <div class="d-none d-sm-flex flex-column flex-md-row align-items-center py-1 px-0 lg-top-bar">
+            <h5 class="my-0 mr-md-auto text-white">CALL US :
+                <span class="font-weight-normal">+92 51 111 786 785</span>
+            </h5>
+            <nav class="my-2 my-md-0 mr-md-3">
+                <a class="btn border btn-primary rounded-0 mr-1" href="https://blog.rehmantravel.com/" target="_blank">BLOG</a>
+
+            </nav>
+        </div>
+        <div class="row mobile-top-bar">
+            <div class="d-flex flex-row justify-content-between align-items-center p-2 px-0 w-100 d-sm-none">
+                <div class="col-2 my-0 text-white text-left">
+                    <a aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="text-white" id="navbarCollapseTopmenu" data-target="#navbarSupportedContent" data-toggle="collapse" href="#" (click)="showHideTopmenu($event)">
+                        <i class="material-icons">menu</i>
+                    </a>
+                </div>
+                <div class="col-7 my-0 text-white text-center">rehmantravel.com</div>
+                <div class="col-3 my-0 text-white text-right">
+                    <div class="dropdown" id="branchContactNumDropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" (click)="showHideContactNumbers($event)">
+                            <!-- <i-phone-call></i-phone-call> -->
+                            <i class="material-icons">phone</i>
+                        </button>
+                        <div class="dropdown-menu rt-branch-phone" id="branchContactuNumLists" aria-labelledby="dropdownMenuButton" style="position: absolute; transform: translate3d(-83px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            <a class="dropdown-item" href="tel:+9251111786785">
+                                <i class="material-icons">phone</i> Islamabad</a>
+                            <a class="dropdown-item" href="tel:+9242111786785">
+                                <i class="material-icons">phone</i> Lahore</a>
+                            <a class="dropdown-item" href="tel:+9221111786785">
+                                <i class="material-icons">phone</i> Karachi</a>
+                            <a class="dropdown-item" href="tel:+92915253051">
+                                <i class="material-icons">phone</i> Peshawar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-navbar [reloadNav]="isReload" (updateReload)="setIsReload($event)"></app-navbar>

@@ -1,0 +1,33 @@
+<app-header></app-header>
+<div>
+  <img class="img-fluid" src="assets/img/visa-background-image.jpg">
+</div>
+   <section class="visa-contents">
+        <div class="container sidebar">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="sidebar-list">
+                <app-request-callback-form></app-request-callback-form>
+              </div>
+              <div class="sidebar-subscribe mt-4">
+                <p class="mb-0">Subscribe to Get Amazing Offers</p>
+                <h3>Tour Alerts</h3>
+                <button class="btn btn-secondary">Subscribe</button>
+              </div>
+            </div>
+            <div class="col-sm-9" *ngIf="page_info">
+            	<h1>{{ page_info.name }}</h1>
+            	<nav aria-label="breadcrumb">
+      	          <ol class="breadcrumb">
+      	            <li class="breadcrumb-item">
+      	              <a routerLink="/">Home</a>
+      	            </li>
+      	            <li class="breadcrumb-item active">{{ page_info.name }}</li>
+      	          </ol>
+      	        </nav>
+            	<div [innerHTML]="page_info.description"></div>
+            </div>
+          </div>
+        </div>
+   </section>
+   <app-footer></app-footer>
