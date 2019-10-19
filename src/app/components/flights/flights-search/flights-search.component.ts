@@ -352,7 +352,7 @@ export class FlightsSearchComponent implements OnInit {
 		}
 	}
   showHidePaxDropdown(evt) {
-		jQuery('.close-dropdown').toggleClass('show');
+		// jQuery('.close-dropdown').toggleClass('show');
   }
 	closeDropDown(ev) {
 		// jQuery(ev.path[2]).removeClass('show');

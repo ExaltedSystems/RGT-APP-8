@@ -38,9 +38,9 @@
                 <mat-card class="rounded-0 mt-2 mb-3" style="background: #57a5f9;color: #fff">
                     <h3 class="sidebar-title" style="color:#fff; border-bottom:solid 1px #fff">Your Booking Details</h3>
                     <b>Check In</b>
-                    <p>{{checkInDate | date:'EEEE, MMMM d, y'}}</p>
+                    <p>{{checkInDate | date:'fullDate'}}</p>
                     <b>Check Out</b>
-                    <p>{{checkOutDate | date:'EEEE, MMMM d, y'}}</p>
+                    <p>{{checkOutDate | date:'fullDate'}}</p>
                     <b>Total Nights Stay</b>
                     <p>{{totalNights}} Nights</p>
                     <!-- <a href="">Travelling on different dates?</a> -->
@@ -369,13 +369,13 @@
                                 <tr>
                                     <td>Check In</td>
                                     <td>
-                                        <b>{{checkInDate | date:'EEEE, MMMM d, y'}}</b>
+                                        <b>{{checkInDate | date:'fullDate'}}</b>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Check Out</td>
                                     <td>
-                                        <b>{{checkOutDate | date:'EEEE, MMMM d, y'}}</b>
+                                        <b>{{checkOutDate | date:'fullDate'}}</b>
                                     </td>
                                 </tr>
                                 <tr>

@@ -258,25 +258,25 @@ export class HotelsListingComponent implements OnInit {
           this.propertyTypes.push({ value: element.prperty_name, title: element.prperty_name, slelcted: false });
           let isBreakfast = false;
           // get breakfast types array
-          if(element.breakfast != null) {
-              isBreakfast = true;
-              // console.log('ifHere')
-          }
-          if(element.breakfast != "") {
-            isBreakfast = true;
-              // console.log('elseifHere')
-          }
-          if(element.breakfast != "No") {
-            isBreakfast = true;              
-            // console.log('elseelseifHere')
-          }
-          if(isBreakfast) {
-            if (element.breakfast_type.length > 0) {
-              element.breakfast_type.forEach((ele) => {
-                  this.breakfastTypes.push({ value: ele.name, title: ele.name, slelcted: false });
-              });
-          }
-          }
+        //   if(element.breakfast != null) {
+        //       isBreakfast = true;
+        //       // console.log('ifHere')
+        //   }
+        //   if(element.breakfast != "") {
+        //     isBreakfast = true;
+        //       // console.log('elseifHere')
+        //   }
+        //   if(element.breakfast != "No") {
+        //     isBreakfast = true;              
+        //     // console.log('elseelseifHere')
+        //   }
+        //   if(isBreakfast) {
+            if (element.breakfast_type != null && element.breakfast_type.length > 0) {
+                element.breakfast_type.forEach((ele) => {
+                    this.breakfastTypes.push({ value: ele.name, title: ele.name, slelcted: false });
+                });
+            }
+        //   }
           
 
           // get price array
@@ -298,11 +298,14 @@ export class HotelsListingComponent implements OnInit {
       this.options.floor = this.minPrice;
       this.maxPrice = Math.max.apply(null, this.priceList);
       this.options.ceil = this.maxPrice;
+      this.selectedPriceValue = [this.minPrice, this.maxPrice];
   }
 
 
   rangeChanged(event: any) {
-      this.selectedPriceValue = [event[0], event[1]];
+    //   console.log('selected:', [event, this.minPrice, this.maxPrice])
+    //   this.selectedPriceValue = [event[0], event[1]];
+      this.selectedPriceValue = [this.minPrice, this.maxPrice];
   }
 
   get selectedPrice() {
