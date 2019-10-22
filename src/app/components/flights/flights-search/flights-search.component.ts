@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDatepicker, MatAutocompleteTrigger, MatOptionSelectionChange, MatDatepickerInputEvent, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import { map, startWith } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { isObject } from 'util';
 import { AppDateAdapter, APP_DATE_FORMATS } from 'src/app/date.adapter';
 import { MainService } from 'src/app/services/main.service.service.js';
 import * as jQuery from 'jquery';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-flights-search',
@@ -72,7 +73,7 @@ export class FlightsSearchComponent implements OnInit {
 
 
 	constructor(private __fb: FormBuilder, private __ms: MainService, private __router: Router, private __activated: ActivatedRoute,
-		private __cookieService: CookieService) {
+		private __cookieService: CookieService, @Inject(PLATFORM_ID) private platformId: Object) {
 		this.flyingFromLists = allAirlinesList;
 		this.flyingToLists = allAirlinesList;
 	}
@@ -294,8 +295,10 @@ export class FlightsSearchComponent implements OnInit {
 		if (this.flightSearch.valid) {
 			formInputs.departureDate = this.__ms.setDateFormat(formInputs.departureDate);
 			formInputs.returnDate = this.__ms.setDateFormat(formInputs.returnDate);
-			localStorage.setItem('oLocation', formInputs.flyingFrom);
-			localStorage.setItem('dLocation', formInputs.flyingTo);
+			if(isPlatformBrowser(this.platformId)){
+				localStorage.setItem('oLocation', formInputs.flyingFrom);
+				localStorage.setItem('dLocation', formInputs.flyingTo);
+			}
 			let flightType = formInputs.flightType;
 			this.__cookieService.set('flightType', formInputs.flightType);
 			this.__cookieService.set('flyingFrom', formInputs.flyingFrom);
@@ -391,15 +394,17 @@ export class FlightsSearchComponent implements OnInit {
 	
 		this.flyingFromAutocomplete.setValue(this.flyingFrom);
 		this.flyingToAutocomplete.setValue(this.flyingTo);
-		let isMobile = window.matchMedia("(max-width:768px)").matches;
 		jQuery('.fly-from-row').animate({"marginLeft" : "+=114%"}, 300);
 		jQuery('.fly-to-row').animate({"marginLeft" : "-=114%"}, 300);
-		window.setTimeout(() => {
-			jQuery('.fly-from-row').removeAttr('style');
-			jQuery('#fly_from_row').removeAttr('style');
-			jQuery('.fly-to-row').removeAttr('style');
-			jQuery('#fly_to_row').removeAttr('style');
-		}, 500);
+		if(isPlatformBrowser(this.platformId)){
+			let isMobile = window.matchMedia("(max-width:768px)").matches;
+			window.setTimeout(() => {
+				jQuery('.fly-from-row').removeAttr('style');
+				jQuery('#fly_from_row').removeAttr('style');
+				jQuery('.fly-to-row').removeAttr('style');
+				jQuery('#fly_to_row').removeAttr('style');
+			}, 500);
+		}
 		this.flightSearch.controls['flyingFrom'].setValue(this.flyingFrom);
 		this.flightSearch.controls['flyingTo'].setValue(this.flyingTo);	
 	}
@@ -411,11 +416,13 @@ export class FlightsSearchComponent implements OnInit {
 		} else {
 			placeHolder = evt;
 		}
-		window.setTimeout(() => {
-			if (jQuery('.mat-calendar-header').find("h4").length == 0) {
-				jQuery('.mat-calendar-header').prepend('<h4 class="center font-weight-bold text-danger">' + placeHolder + '</h3>');
-			}
-		}, 300);
+		if(isPlatformBrowser(this.platformId)) {
+			window.setTimeout(() => {
+				if (jQuery('.mat-calendar-header').find("h4").length == 0) {
+					jQuery('.mat-calendar-header').prepend('<h4 class="center font-weight-bold text-danger">' + placeHolder + '</h3>');
+				}
+			}, 300);
+		}
 	}
 	setReturnDate(event: MatDatepickerInputEvent<Date>) {
 		this.flightSearch.get('returnDate').setValue(this.addDays(3, event.target.value));

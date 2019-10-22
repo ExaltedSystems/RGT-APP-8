@@ -30,3 +30,15 @@
 .dark-btn{
     background: #1f3166;
 }
+
+#sticky_search_form {
+    position: sticky;
+    position: -webkit-sticky;
+    background: #f83d23;
+    top: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 6px #000;
+    color: #fff;
+}

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { isObject } from 'util';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MainService } from 'src/app/services/main.service.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-request-callback-form',
@@ -30,16 +31,19 @@ export class RequestCallbackFormComponent implements OnInit {
   sanitizedUrl: any;
 
   constructor(private __ms: MainService, private __fb: FormBuilder, private __dd: DeviceDetectorService,
-    private __router: Router, private __actRoute: ActivatedRoute, private sanitizer: DomSanitizer) {
+    private __router: Router, private __actRoute: ActivatedRoute, private sanitizer: DomSanitizer, 
+    @Inject(PLATFORM_ID) private platformId: Object) {
     this.deviceFullInfo = this.__dd.getDeviceInfo();
     this.browser = this.__dd.browser;
     this.operatingSys = this.__dd.os;
-    this.moduleUrl = window.location.href.replace('//', '').split('/')[1];
-    if (this.__actRoute.snapshot.queryParams['_flight_type']) {
-      this.moduleUrl = 'flights';
-    }
-    if(window.matchMedia("(max-width: 768px)").matches) {
-      this.isMobile = true;
+    if(isPlatformBrowser(this.platformId)){
+      this.moduleUrl = window.location.href.replace('//', '').split('/')[1];
+      if (this.__actRoute.snapshot.queryParams['_flight_type']) {
+        this.moduleUrl = 'flights';
+      }
+      if(window.matchMedia("(max-width: 768px)").matches) {
+        this.isMobile = true;
+      }
     }
     this.setInquiryType(this.moduleUrl);
   }

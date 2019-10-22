@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-view-airline-hotel-detials',
@@ -13,7 +14,8 @@ export class ViewAirlineHotelDetialsComponent implements OnInit {
   baseUrl: any;
   popularVisa: object;
   pageType: string;
-  constructor(private __ms: MainService, private __router: Router, private __actRoute: ActivatedRoute, private __meta: Meta, private __title: Title) {
+  constructor(private __ms: MainService, private __router: Router, private __actRoute: ActivatedRoute, private __meta: Meta, 
+    private __title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
     this.__router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     }
@@ -43,7 +45,9 @@ export class ViewAirlineHotelDetialsComponent implements OnInit {
     this.__meta.updateTag({ name: 'description', content: result.metaDescription });
     this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
     this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-    this.__meta.updateTag({ property: "og:url", content: window.location.href });
+		if(isPlatformBrowser(this.platformId)){ 
+      this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    }
   }
 
 }

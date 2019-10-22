@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ViewEncapsulation, PLATFORM_ID, Inject } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { MatDatepicker, MatSelect, MatOption, MatButton, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { MatStep, MatStepper } from '@angular/material';
 import { HttpHeaders } from '@angular/common/http';
 import { AppDateAdapter, APP_DATE_FORMATS } from 'src/app/date.adapter';
@@ -26,9 +26,9 @@ export class FlightsBookingComponent implements OnInit {
   dptDate: any;
   rtnDate: any;
   oLocation: any;
-  oLocationName: any = localStorage.getItem('oLocation');
+  oLocationName: any = (isPlatformBrowser(this.platformId) ? localStorage.getItem('oLocation') : '');
   dLocation: any;
-  dLocationName: any = localStorage.getItem('dLocation');
+  dLocationName: any = (isPlatformBrowser(this.platformId) ? localStorage.getItem('dLocation') : '');
   cabin: any;
   prefAirline: any;
   adtQty: number;
@@ -103,7 +103,7 @@ export class FlightsBookingComponent implements OnInit {
   fareRules = null;
   paymentFlag = 1;
   constructor(private __fb: FormBuilder, private __actRouter: ActivatedRoute, private __router: Router,
-    private __ms: MainService, private __datepipe: DatePipe) {
+    private __ms: MainService, private __datepipe: DatePipe, @Inject(PLATFORM_ID) private platformId: Object) {
     // // window.scroll(0, 0);
     this.getIssuingCountriesList();
   }
@@ -114,14 +114,14 @@ export class FlightsBookingComponent implements OnInit {
     this.byBranchForm = this.__fb.group({});
     this.getPaymentGateways();
     // this.flightInfo = this.__ms.FlightInfo;
-    this.flightInfo = JSON.parse(localStorage.getItem('flightInfo'));
+    this.flightInfo = (isPlatformBrowser(this.platformId) ? JSON.parse(localStorage.getItem('flightInfo')) : '');
     this.adtQty = Number(this.flightInfo.adults);
     this.cnnQty = Number(this.flightInfo.children);
     this.infQty = Number(this.flightInfo.infants);
     let vCarrier = this.flightInfo.vCarrier;
     this.vCarrier = vCarrier;
     if (vCarrier == 'ER') {
-      let Option = JSON.parse(localStorage.getItem('OriginDestinationOption'));
+      let Option = (isPlatformBrowser(this.platformId) ? JSON.parse(localStorage.getItem('OriginDestinationOption')) : '');
       this.__setReservationArr(Option);
       // this.tagExpired = true;
     } else {
@@ -423,7 +423,7 @@ export class FlightsBookingComponent implements OnInit {
     this.__ms.postData(step1Url, this.travellersObj).subscribe(res => {
       //console.log(res)
       // window.scroll(0, 0);
-      localStorage.setItem("paxToken", res['jwt']);
+      (isPlatformBrowser(this.platformId) ? localStorage.setItem("paxToken", res['jwt']) : '');
       this.referenceNo = res['ref_no'];
       this.getPaymentGateways();
     })
@@ -440,7 +440,8 @@ export class FlightsBookingComponent implements OnInit {
     this.payProgressBar = true;
     this.isPayButtonClick = true;
     let creditCardUrl = this.__ms.backEndUrl + 'Ticket/creditCard';
-    let reservationObj = Object.assign(formInputs, this.travellersObj, this.segmentInfoArr, { _token: localStorage.getItem('paxToken') });
+    let _token = (isPlatformBrowser(this.platformId) ? localStorage.getItem('paxToken') : '');
+    let reservationObj = Object.assign(formInputs, this.travellersObj, this.segmentInfoArr, { _token: _token  });
     this.__ms.postData(creditCardUrl, reservationObj).subscribe(res => {
       // console.log(res)
       // localStorage.setItem("paxToken", res['jwt']);
@@ -457,13 +458,15 @@ export class FlightsBookingComponent implements OnInit {
   cashOnDelivery() {
     this.payProgressBar = true;
     this.paymentFlag = 3;
+    let _token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
     let flightInfoObj = {
       _refrenceNo: this.referenceNo,
-      _token: localStorage.getItem("paxToken"),
+      _token: _token,
       _paymentFlag: this.paymentFlag
     }
     this.isPayButtonClick = true;
-    Object.assign({ refrenceNo: this.referenceNo }, { token: localStorage.getItem("paxToken") })
+    let token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
+    Object.assign({ refrenceNo: this.referenceNo }, { token: token })
     let flightInfoUrl = this.__ms.backEndUrl + 'Ticket/retFlightInfo';
     this.__ms.postData(flightInfoUrl, flightInfoObj).subscribe(res => {
       // console.log(res);
@@ -487,13 +490,15 @@ export class FlightsBookingComponent implements OnInit {
   byBank() {
     this.payProgressBar = true;
     this.paymentFlag = 2;
+    let _token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
     let flightInfoObj = {
       _refrenceNo: this.referenceNo,
-      _token: localStorage.getItem("paxToken"),
+      _token: _token,
       _paymentFlag: this.paymentFlag
     }
     this.isPayButtonClick = true;
-    Object.assign({ refrenceNo: this.referenceNo }, { token: localStorage.getItem("paxToken") })
+    let token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
+    Object.assign({ refrenceNo: this.referenceNo }, { token: token})
     let flightInfoUrl = this.__ms.backEndUrl + 'Ticket/retFlightInfo';
     this.__ms.postData(flightInfoUrl, flightInfoObj).subscribe(res => {
       // console.log(res);
@@ -511,13 +516,15 @@ export class FlightsBookingComponent implements OnInit {
   byBranch() {
     this.payProgressBar = true;
     this.paymentFlag = 7;
+    let _token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
     let flightInfoObj = {
       _refrenceNo: this.referenceNo,
-      _token: localStorage.getItem("paxToken"),
+      _token: _token,
       _paymentFlag: this.paymentFlag
     }
     this.isPayButtonClick = true;
-    Object.assign({ refrenceNo: this.referenceNo }, { token: localStorage.getItem("paxToken") })
+    let token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
+    Object.assign({ refrenceNo: this.referenceNo }, { token: token})
     let flightInfoUrl = this.__ms.backEndUrl + 'Ticket/retFlightInfo';
     this.__ms.postData(flightInfoUrl, flightInfoObj).subscribe(res => {
       // console.log(res);
@@ -548,10 +555,11 @@ export class FlightsBookingComponent implements OnInit {
     this.__ms.pnrCreated(pnr).subscribe(res => {
       //console.log(res)
       this.createJSON(res);
+      let _token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
       this.__router.navigate(["/thank-you"], {
         // relativeTo: this.__route,
         queryParams: {
-          _token: localStorage.getItem("paxToken")
+          _token: _token
         }
       });
     })
@@ -606,7 +614,8 @@ export class FlightsBookingComponent implements OnInit {
   jazzCashPost(formInputs) {
     this.paymentFlag = 5;
     let jazzCashUrl = this.__ms.backEndUrl + 'Ticket/jazzCash';
-    let jazzCashObj = Object.assign(formInputs, this.travellersObj, { _token: localStorage.getItem("paxToken"), _paymentFlag: this.paymentFlag });
+    let _token = (isPlatformBrowser(this.platformId) ? localStorage.getItem("paxToken") : '');
+    let jazzCashObj = Object.assign(formInputs, this.travellersObj, { _token: _token, _paymentFlag: this.paymentFlag });
     this.__ms.postData(jazzCashUrl, jazzCashObj).subscribe(res => {
       //console.log(JSON.stringify(res))
       // localStorage.setItem("paxToken", res['jwt']);

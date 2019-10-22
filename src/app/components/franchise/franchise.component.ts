@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { isObject } from 'util';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-franchise',
@@ -21,7 +22,8 @@ export class FranchiseComponent implements OnInit {
   errorObj: any = '';
 	baseUrl: string;
   constructor(private __ms: MainService, private __fb: FormBuilder, private __dd: DeviceDetectorService,
-  private __router: Router, private __meta: Meta, private __title: Title) {
+  private __router: Router, private __meta: Meta, private __title: Title, 
+  @Inject(PLATFORM_ID) private platformId: Object) {
 		this.baseUrl = this.__ms.baseUrl;
   }
 
@@ -67,7 +69,9 @@ export class FranchiseComponent implements OnInit {
     this.__meta.updateTag({ name: 'description', content: result.metaDescription });
     this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
     this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-    this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    if(isPlatformBrowser(this.platformId)){
+      this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    }
   }
 
 }

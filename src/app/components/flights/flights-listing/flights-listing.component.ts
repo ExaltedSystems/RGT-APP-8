@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, Input, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, EventEmitter, ViewEncapsulation, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainService } from 'src/app/services/main.service.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDatepicker, MatAutocomplete, MatInput, MatSelect, MatRadioButton } from '@angular/material';
 import { map } from 'rxjs/operators';
@@ -36,8 +36,8 @@ export class FlightsListingComponent implements OnInit {
   dptDate: any;
   rtnDate: any;
   oLocation: any;
-  oLocationName: any = localStorage.getItem('oLocation');
-  dLocationName: any = localStorage.getItem('dLocation');
+  oLocationName: any = (isPlatformBrowser(this.platformId) ? localStorage.getItem('oLocation') : '');
+  dLocationName: any = (isPlatformBrowser(this.platformId) ? localStorage.getItem('dLocation') : '');
   dLocation: any;
   cabin: any;
   prefAirline: any;
@@ -102,7 +102,8 @@ export class FlightsListingComponent implements OnInit {
   // END VARIABLES FOR PRICE RANGE SLIDER
 
   constructor(private __actRouter: ActivatedRoute, private __ms: MainService, private __router: Router,
-    private __fb: FormBuilder, private __cookieService: CookieService, private __device: DeviceDetectorService) {
+    private __fb: FormBuilder, private __cookieService: CookieService, private __device: DeviceDetectorService, 
+    @Inject(PLATFORM_ID) private platformId: Object) {
     // // window.scroll(0, 0);
     this.deviceFullInfo = this.__device.getDeviceInfo();
     this.browser = this.__device.browser;
@@ -309,7 +310,7 @@ export class FlightsListingComponent implements OnInit {
         this.availableFlights = res;
         if (res != null) {
           this.__ms.__isAirToken = res['Token'];
-          localStorage.setItem('__isAirToken', res['Token']);
+          (isPlatformBrowser(this.platformId) ? localStorage.setItem('__isAirToken', res['Token']) : '');
           if (res['OTA_AirLowFareSearchRS']['PricedItineraries']['PricedItinerary'] && res['OTA_AirLowFareSearchRS']['PricedItineraries']['PricedItinerary'].length > 0) {
             this.availableFlights = res['OTA_AirLowFareSearchRS']['PricedItineraries']['PricedItinerary'];
 
@@ -593,9 +594,10 @@ export class FlightsListingComponent implements OnInit {
     if (this.flightSearch.valid) {
       formInputs.departureDate = this.__ms.setDateFormat(formInputs.departureDate);
       formInputs.returnDate = this.__ms.setDateFormat(formInputs.returnDate);
-
-      localStorage.setItem('oLocation', formInputs.flyingFrom);
-      localStorage.setItem('dLocation', formInputs.flyingTo);
+      if(isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('oLocation', formInputs.flyingFrom);
+        localStorage.setItem('dLocation', formInputs.flyingTo);
+      }
 
       let flightType = formInputs.flightType;
       let dptDate = formInputs.departureDate;
@@ -656,8 +658,10 @@ export class FlightsListingComponent implements OnInit {
     let flightInfo = { 'flightType': this.flightType, 'origin': this.oLocation, 'destination': this.dLocation, 'adults': this.adtQty, 
     'children': this.cnnQty, 'infants': this.infQty, 'dptDate': this.dptDate, 'rtnDate': this.rtnDate, 'cabin': this.cabin, 
     'prefAirline': this.prefAirline, 'tagID': tagID, 'vCarrier': vCarrier };
-    localStorage.setItem('flightInfo', JSON.stringify(flightInfo));
-    localStorage.setItem('OriginDestinationOption', JSON.stringify(Itinerary))
+    if(isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('flightInfo', JSON.stringify(flightInfo));
+      localStorage.setItem('OriginDestinationOption', JSON.stringify(Itinerary))
+    }
     this.__ms.FlightInfo = flightInfo;
 
     if (!flag) {
@@ -848,9 +852,10 @@ export class FlightsListingComponent implements OnInit {
     if (this.flightSearch.valid) {
       formInputs.departureDate = this.__ms.setDateFormat(formInputs.departureDate);
       formInputs.returnDate = this.__ms.setDateFormat(formInputs.returnDate);
-
-      localStorage.setItem('oLocation', formInputs.flyingFrom);
-      localStorage.setItem('dLocation', formInputs.flyingTo);
+      if(isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('oLocation', formInputs.flyingFrom);
+        localStorage.setItem('dLocation', formInputs.flyingTo);
+      }
 
       let flightType = formInputs.flightType;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDatepicker, MatAutocompleteTrigger, MatOptionSelectionChange, MatDatepickerInputEvent, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { isObject } from 'util';
 import { AppDateAdapter, APP_DATE_FORMATS } from 'src/app/date.adapter';
 import * as jQuery from 'jquery';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -79,8 +80,11 @@ export class HomeComponent implements OnInit {
 
   constructor(private __fb: FormBuilder, private __ms: MainService, private __router: Router, private __meta:Meta, 
     private __activated: ActivatedRoute, private __cookieService: CookieService,
-    private __device: DeviceDetectorService, private __title: Title) {
-      this.__meta.updateTag({property:"og:url", content: window.location.href});
+    private __device: DeviceDetectorService, private __title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
+      if (isPlatformBrowser(this.platformId)) {
+        // Client only code.
+        this.__meta.updateTag({property:"og:url", content: window.location.href});
+      }
       this.updateMetaTags();
       this.baseUrl = this.__ms.baseUrl;
 			this.flyingFromLists = allAirlinesList;
@@ -338,9 +342,10 @@ export class HomeComponent implements OnInit {
     if (this.flightSearch.valid) {
       formInputs.departureDate = this.__ms.setDateFormat(formInputs.departureDate);
       formInputs.returnDate = this.__ms.setDateFormat(formInputs.returnDate);
-
-      localStorage.setItem('oLocation', formInputs.flyingFrom);
-      localStorage.setItem('dLocation', formInputs.flyingTo);
+      if(isPlatformBrowser(this.platformId)){
+        localStorage.setItem('oLocation', formInputs.flyingFrom);
+        localStorage.setItem('dLocation', formInputs.flyingTo);
+      }
 
       let flightType = formInputs.flightType;
 
@@ -435,7 +440,9 @@ export class HomeComponent implements OnInit {
       this.__meta.updateTag({ name: 'description', content: result['metaDescription'] });
       this.__meta.updateTag({ property: "og:title", content: result['metaTitle'] });
       this.__meta.updateTag({ property: "og:description", content: result['metaDescription'] });
-      this.__meta.updateTag({ property: "og:url", content: window.location.href });
+      if (isPlatformBrowser(this.platformId)) {
+        this.__meta.updateTag({ property: "og:url", content: window.location.href });
+      }
 		});
   }
 	setSelectedValue(evt: MatOptionSelectionChange, attrName:string){
@@ -473,12 +480,14 @@ export class HomeComponent implements OnInit {
 			placeHolder = evt.target.getAttribute('placeholder');
 		} else {
 			placeHolder = evt;
-		}
-		window.setTimeout(()=> {
-			if(jQuery('.mat-calendar-header').find("h4").length == 0) {
-				jQuery('.mat-calendar-header').prepend('<h4 class="center font-weight-bold text-danger">' + placeHolder + '</h3>');
-			}
-		}, 300);
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      window.setTimeout(()=> {
+        if(jQuery('.mat-calendar-header').find("h4").length == 0) {
+          jQuery('.mat-calendar-header').prepend('<h4 class="center font-weight-bold text-danger">' + placeHolder + '</h3>');
+        }
+      }, 300);
+    }
   }
   setReturnDate(event: MatDatepickerInputEvent<Date>) {
     this.flightSearch.get('returnDate').setValue(this.addDays(3, event.target.value));

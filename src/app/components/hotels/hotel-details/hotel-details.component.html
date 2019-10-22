@@ -48,7 +48,7 @@
                             <small>1 room for {{hotelDetails['room_details'][0].price_pp_pn}}</small>
                           </button>
                         </mat-card>
-                        <div class="side-search-form custom-material-form p-2 mb-5 d-none d-sm-block" sticky style=" background:#57a5f9;">
+                        <div class="side-search-form custom-material-form p-2 mb-5 d-none d-sm-block" style=" background:#57a5f9;" id="sticky_search_form">
                             <app-hotel-search-form (searchEvent)="getSearchResults($event)" [sideForm]="sideForm"></app-hotel-search-form>
                         </div>
                     </div>

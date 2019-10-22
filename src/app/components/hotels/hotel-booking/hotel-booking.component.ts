@@ -59,7 +59,7 @@ export class HotelBookingComponent implements OnInit {
 
   constructor(private _ms: MainService, private _cookieService: CookieService, private __fb: FormBuilder,
     private __router: Router) {
-      window.scroll(0, 0);
+      // window.scroll(0, 0);
     }
 
   ngOnInit() {

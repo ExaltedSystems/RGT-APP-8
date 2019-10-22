@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-umrah',
@@ -13,15 +14,18 @@ export class UmrahComponent implements OnInit {
 	baseUrl: string;
 	lineBr: string = " || ";
 	spaceBr: string = "Package Includes :";
-	constructor(private _ms: MainService, private __router: Router, private __meta: Meta, private __title: Title) {
+	constructor(private _ms: MainService, private __router: Router, private __meta: Meta, private __title: Title, 
+		@Inject(PLATFORM_ID) private platformId: Object) {
 		// window.scroll(0, 300);
 		this.baseUrl = this._ms.baseUrl;
 		this.__router.routeReuseStrategy.shouldReuseRoute = function () {
 			return false;
 		}
-		if(window.matchMedia('(max-width: 768px)').matches) {
-			this.lineBr = "<br>";
-			this.spaceBr = "Package<br>Includes:";
+		if(isPlatformBrowser(this.platformId)){ 
+			if(window.matchMedia('(max-width: 768px)').matches) {
+				this.lineBr = "<br>";
+				this.spaceBr = "Package<br>Includes:";
+			}
 		}
 	}
 	ngOnInit() {
@@ -38,7 +42,9 @@ export class UmrahComponent implements OnInit {
 		this.__meta.updateTag({ name: 'description', content: result.metaDescription }, 'name=description');
 		this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
 		this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-		this.__meta.updateTag({ property: "og:url", content: window.location.href });
+		if(isPlatformBrowser(this.platformId)){ 
+			this.__meta.updateTag({ property: "og:url", content: window.location.href });
+		}
 	}
 
 }

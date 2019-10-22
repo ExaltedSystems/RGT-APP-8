@@ -19,6 +19,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { Ng5SliderModule } from 'ng5-slider';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { AgmCoreModule } from '@agm/core';
+import { StorageModule } from '@ngx-pwa/local-storage';
+import { StorageServiceModule } from 'angular-webstorage-service';
 // Components
 import { AboutUsComponent } from './components/about-us/about-us.component';
 import { ContactUsComponent } from './components/contact-us/contact-us.component';
@@ -178,7 +180,10 @@ import { AirportPipe } from './pipes/airport.pipe';
     
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyCgL2VGk4yfL2IzdFgGO0m2D36MA3NVwLw'
-    })
+    }),
+    
+    StorageModule.forRoot({ IDBNoWrap: true }),
+    StorageServiceModule
   ],
   providers: [MainService, CookieService, DatePipe],
   bootstrap: [AppComponent]

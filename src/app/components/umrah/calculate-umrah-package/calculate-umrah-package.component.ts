@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { FormBuilder, Validators, FormGroup, FormArray, FormControl } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Router } from '@angular/router';
@@ -59,7 +59,8 @@ export class CalculateUmrahPackageComponent implements OnInit {
   sectorCol: number = 3;
 
   constructor(private __fb: FormBuilder, private __ms: MainService, private __router: Router, private __dd: DeviceDetectorService, 
-    private _date: DatePipe, private __meta: Meta, private __title: Title) {
+    private _date: DatePipe, private __meta: Meta, private __title: Title, 
+    @Inject(PLATFORM_ID) private platformId: Object) {
     this.deviceFullInfo = this.__dd.getDeviceInfo();
     this.browser = this.__dd.browser;
     this.operatingSys = this.__dd.os;
@@ -400,21 +401,23 @@ export class CalculateUmrahPackageComponent implements OnInit {
   }
   printPkg(divId) {
     let printContents, popupWin;
-    printContents = document.getElementById(divId).innerHTML;
-    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    popupWin.document.open();
-    popupWin.document.write(`
-      <html>
-        <head>
-          <title>Umrah Calculator - Design Package</title>
-          <style>.table-bordered {border: 1px solid #dee2e6;}
-          .table-bordered td, .table-bordered th {border: 1px solid #dee2e6;}
-          .table td, .table th {padding: .4rem;vertical-align: top;border-top: 1px solid #dee2e6;}</style>
-        </head>
-        <body onload="window.print();window.close()">${printContents}</body>
-      </html>`
-    );
-    popupWin.document.close();
+    if(isPlatformBrowser(this.platformId)){ 
+      printContents = document.getElementById(divId).innerHTML;
+      popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Umrah Calculator - Design Package</title>
+            <style>.table-bordered {border: 1px solid #dee2e6;}
+            .table-bordered td, .table-bordered th {border: 1px solid #dee2e6;}
+            .table td, .table th {padding: .4rem;vertical-align: top;border-top: 1px solid #dee2e6;}</style>
+          </head>
+          <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
+    }
   }
 
   incrementNumber(type, key) {
@@ -671,11 +674,15 @@ export class CalculateUmrahPackageComponent implements OnInit {
 		this.__title.setTitle(result.metaTitle);
 		this.__meta.updateTag({ name: 'description', content: result.metaDescription });
 		this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
-		this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-		this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
+    if(isPlatformBrowser(this.platformId)){ 
+      this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    }
   }
   resetErrMessage() {
-    setTimeout(()=>{this.errorMsg = '';}, 5000);
+    if(isPlatformBrowser(this.platformId)){ 
+      setTimeout(()=>{this.errorMsg = '';}, 5000);
+    }
   }
 
 }

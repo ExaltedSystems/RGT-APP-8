@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Http, Response } from '@angular/http';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -26,14 +27,22 @@ export class MainService {
   public emailPattern: string = "[A-Za-z0-9._+-]{2,}@[a-zA-Z]{2,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})";
   public phonePattern: string = "^[+]?[0-9 -]*$";
   public ipAddress: any;
-  constructor(private __httpClient: HttpClient, private __http: Http, private __datePipe: DatePipe) {
+  constructor(private __httpClient: HttpClient, private __http: Http, private __datePipe: DatePipe, private __router: Router, 
+    @Inject(DOCUMENT) private doc: Document, @Inject(PLATFORM_ID) private platformId: Object) {
     this.getIpAddress();
     // For Live Site to Set http / https
-    let loc = window.location;
+    // let loc = window.location;
+    // let loc = this.__router['location']['_platformLocation']['location'];
+    // console.log('Documents:', this.doc.location)
+    let loc = this.doc.location;
     let base_url = loc.protocol+"//"+loc.hostname+"/";
     this.baseUrl = base_url;
     this.backEndUrl = this.baseUrl+"rgtapp/index.php/services/";
     // this.backEndUrl = "https://www.rehmantravel.com/rgtapp/index.php/services/";
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      this.__isAirToken = localStorage.getItem('__isAirToken');
+    }
     
     this.tktBaseUrl = loc.protocol+'//exaltedsys.com/';
     this.flightsUrl = this.tktBaseUrl+'Air-Service/AirAvailability/Flights';
@@ -41,7 +50,6 @@ export class MainService {
     this.revalidateUrl = this.tktBaseUrl+'Air-Service/AirAvailability/AirRevalidate';
     this.itineraryUrl = this.tktBaseUrl+'Air-Service/AirAvailability/AirItinerary';
     this.ticketUrl = this.tktBaseUrl+'Air-Service/AirAvailability/AirTicket';
-    this.__isAirToken = localStorage.getItem('__isAirToken');
   }
 
 
@@ -341,9 +349,14 @@ export class MainService {
 
   pnrCreated(pnr){
     let pnrSaveUrl = this.backEndUrl+'Ticket/pnrCreated';
+    let _token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      _token = localStorage.getItem("paxToken");
+    }
     let pnrSaveObj = {
       pnr: pnr,
-      _token: localStorage.getItem("paxToken")
+      _token: _token
     }
     return this.postData(pnrSaveUrl, pnrSaveObj)
   } // end pnrcreated

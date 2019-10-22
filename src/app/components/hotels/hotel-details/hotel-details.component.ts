@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
 import { MainService } from 'src/app/services/main.service.service';
 import { CookieService } from 'ngx-cookie-service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { FormControl, FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -70,27 +70,28 @@ export class HotelDetailsComponent implements OnInit {
   roomsMsg;
 
   constructor(private _ms: MainService, private _date: DatePipe, private __fb: FormBuilder,private _router: Router,
-       private _cookieService: CookieService, private deviceService: DeviceDetectorService) {
+       private _cookieService: CookieService, private deviceService: DeviceDetectorService, @Inject(PLATFORM_ID) private platformId: Object) {
            this.epicFunction();
-          window.scroll(0, 0);
+        //   window.scroll(0, 0);
       }
 
   ngOnInit() {
-      window.scroll(0,0);
-      
-      jQuery(window).scroll(function(){
-          if (jQuery(this).scrollTop() > 1100) {
-              jQuery('#task_flyout').addClass('fixed');
-          } else {
-              jQuery('#task_flyout').removeClass('fixed');
-          }
-          // var scrollHeight = jQuery(document).height();
-          // var scrollPosition = jQuery(window).height() + jQuery(window).scrollTop();
-          // if ((scrollHeight - scrollPosition) / scrollHeight <= 0.410958904109589) {
-          //     // when scroll to bottom of the page
-          //     jQuery('#task_flyout').removeClass('fixed');
-          // }
-      });
+    //   window.scroll(0,0);
+      if(isPlatformBrowser(this.platformId)) {
+          jQuery(window).scroll(function(){
+              if (jQuery(this).scrollTop() > 1100) {
+                  jQuery('#task_flyout').addClass('fixed');
+              } else {
+                  jQuery('#task_flyout').removeClass('fixed');
+              }
+              // var scrollHeight = jQuery(document).height();
+              // var scrollPosition = jQuery(window).height() + jQuery(window).scrollTop();
+              // if ((scrollHeight - scrollPosition) / scrollHeight <= 0.410958904109589) {
+              //     // when scroll to bottom of the page
+              //     jQuery('#task_flyout').removeClass('fixed');
+              // }
+          });
+      }
       // get search query
       this.searchQuery = JSON.parse(this._cookieService.get('hotelQuery'));
       console.log('search',this.searchQuery)

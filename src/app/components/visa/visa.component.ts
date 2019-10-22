@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-visa',
@@ -14,7 +15,8 @@ export class VisaComponent implements OnInit {
 	baseUrl: string;
 	popularVisa: object;
 	constructor(private __ms: MainService, private router: Router, private __meta: Meta, private __title: Title
-		, private __device: DeviceDetectorService) {
+		, private __device: DeviceDetectorService, 
+		@Inject(PLATFORM_ID) private platformId: Object) {
 		// window.scrollTo(0, 0);
 		this.baseUrl = this.__ms.baseUrl;
 		if(this.__device.isDesktop()){
@@ -49,7 +51,9 @@ export class VisaComponent implements OnInit {
 		this.__meta.updateTag({ name: 'description', content: result.metaDescription });
 		this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
 		this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-		this.__meta.updateTag({ property: "og:url", content: window.location.href });
+		if(isPlatformBrowser(this.platformId)){ 
+			this.__meta.updateTag({ property: "og:url", content: window.location.href });
+		}
 	}
 
 }

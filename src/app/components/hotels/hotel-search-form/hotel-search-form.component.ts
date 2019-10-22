@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent, MatAutocompleteTrigger, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { AppDateAdapter, APP_DATE_FORMATS } from 'src/app/date.adapter';
@@ -61,7 +61,7 @@ export class HotelSearchFormComponent implements OnInit {
   @ViewChild(MatAutocompleteTrigger, {static: true}) _auto: MatAutocompleteTrigger;
 
   constructor(private __fb: FormBuilder, private __ms: MainService, private _date: DatePipe, private _router: Router,
-  private _cookieService: CookieService) { 
+  private _cookieService: CookieService, @Inject(PLATFORM_ID) private platformId: Object) { 
     let yr = this.currDate.getFullYear();
     let month = this.currDate.getMonth();
     let day = this.currDate.getDate();
@@ -348,12 +348,14 @@ export class HotelSearchFormComponent implements OnInit {
 		// 	placeHolder = evt.target.getAttribute('placeholder');
 		// } else {
 		// 	placeHolder = evt;
-		// }
-		window.setTimeout(() => {
-			if(jQuery('.mat-calendar-header').find("h4").length == 0) {
-				jQuery('.mat-calendar-header').prepend('<h4 class="center font-weight-bold text-danger">' + placeHolder + '</h4>');
-			}
-		}, 300);
+    // }
+    if(isPlatformBrowser(this.platformId)) {
+      window.setTimeout(() => {
+        if(jQuery('.mat-calendar-header').find("h4").length == 0) {
+          jQuery('.mat-calendar-header').prepend('<h4 class="center font-weight-bold text-danger">' + placeHolder + '</h4>');
+        }
+      }, 300);
+    }
 	}
 
 }

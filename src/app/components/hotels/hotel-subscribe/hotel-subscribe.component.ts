@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { MainService } from 'src/app/services/main.service.service';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-hotel-subscribe',
@@ -14,7 +15,7 @@ export class HotelSubscribeComponent implements OnInit {
   subscriberSuccessMsg: string;
   subscriberErrorMsg: string;
   isLoad: boolean = false;
-  constructor(private __fb: FormBuilder, private __ms: MainService, private __router: Router) { }
+  constructor(private __fb: FormBuilder, private __ms: MainService, private __router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit() {
     this.hotelSubscribeForm = this.__fb.group({
@@ -35,12 +36,14 @@ export class HotelSubscribeComponent implements OnInit {
       } else {
         this.subscriberErrorMsg = result.message;
       }
-      window.setTimeout(()=>{
-        this.hotelSubscribeForm.get('email').setValue('');
-        this.hotelSubscribeForm.controls['email'].markAsUntouched(); 
-        this.subscriberSuccessMsg = '';
-        this.subscriberErrorMsg = '';
-      }, 10000)
+      if(isPlatformBrowser(this.platformId)){
+        window.setTimeout(()=>{
+          this.hotelSubscribeForm.get('email').setValue('');
+          this.hotelSubscribeForm.controls['email'].markAsUntouched(); 
+          this.subscriberSuccessMsg = '';
+          this.subscriberErrorMsg = '';
+        }, 10000)
+      }
       this.isLoad = false;
     });
   }

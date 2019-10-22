@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-deals',
@@ -11,7 +12,7 @@ import { Meta, Title } from '@angular/platform-browser';
 export class DealsComponent implements OnInit {
   page_info: any;
   constructor(private _ms: MainService, private router: Router, private activatedRoute: ActivatedRoute,
-    private __meta: Meta, private __title: Title) {
+    private __meta: Meta, private __title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
       // window.scroll(0, 300);
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -35,7 +36,10 @@ export class DealsComponent implements OnInit {
     this.__meta.updateTag({ name: 'description', content: result.metaDescription });
     this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
     this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-    this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    if (isPlatformBrowser(this.platformId)) {
+      // Client only code.
+      this.__meta.updateTag({ property: "og:url", content: window.location.href });
+    }
   }
 
 }

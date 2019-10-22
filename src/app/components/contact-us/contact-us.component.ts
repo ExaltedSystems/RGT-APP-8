@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isObject } from 'util';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -6,6 +6,7 @@ import { MainService } from 'src/app/services/main.service.service';
 import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { MatIcon } from '@angular/material';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-contact-us',
@@ -24,7 +25,7 @@ export class ContactUsComponent implements OnInit {
   errors;
 
   constructor(private __ms: MainService, private __fb: FormBuilder, private __dd: DeviceDetectorService,
-      private __router: Router, private __meta: Meta, private __title: Title) {
+      private __router: Router, private __meta: Meta, private __title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
       this.deviceFullInfo = this.__dd.getDeviceInfo();
       this.browser = this.__dd.browser;
       this.operatingSys = this.__dd.os;
@@ -88,7 +89,10 @@ export class ContactUsComponent implements OnInit {
       this.__meta.updateTag({ name: 'description', content: result.metaDescription });
       this.__meta.updateTag({ property: "og:title", content: result.metaTitle });
       this.__meta.updateTag({ property: "og:description", content: result.metaDescription });
-      this.__meta.updateTag({ property: "og:url", content: window.location.href });
+      if (isPlatformBrowser(this.platformId)) {
+        // Client only code.
+        this.__meta.updateTag({ property: "og:url", content: window.location.href });
+      }
   }
 
 }

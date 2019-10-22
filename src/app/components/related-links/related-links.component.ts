@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-related-links',
@@ -11,9 +12,12 @@ export class RelatedLinksComponent implements OnInit {
 
   relatedLinks: object;
   isMobile: boolean = false;
-  constructor(private __ms: MainService, private __router: Router, private __actRoute: ActivatedRoute) {
-    if(window.matchMedia('(max-width:768px').matches) {
-      this.isMobile = true;
+  constructor(private __ms: MainService, private __router: Router, private __actRoute: ActivatedRoute, 
+    @Inject(PLATFORM_ID) private platformId: Object) {
+    if(isPlatformBrowser(this.platformId)){
+      if(window.matchMedia('(max-width:768px').matches) {
+        this.isMobile = true;
+      }
     }
   }
 

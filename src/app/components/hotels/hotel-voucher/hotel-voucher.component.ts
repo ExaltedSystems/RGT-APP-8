@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { MainService } from 'src/app/services/main.service.service';
 import { CookieService } from 'ngx-cookie-service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-hotel-voucher',
@@ -11,8 +12,8 @@ export class HotelVoucherComponent implements OnInit {
   bookingDetails: object;
   bookingId: any;  
   isLoading: boolean = true;
-  constructor(private __ms: MainService, private __cookie: CookieService) {
-    window.scroll(0, 300);
+  constructor(private __ms: MainService, private __cookie: CookieService, @Inject(PLATFORM_ID) private platformId: Object) {
+    // window.scroll(0, 300);
   }
 
   ngOnInit() {
@@ -34,7 +35,7 @@ export class HotelVoucherComponent implements OnInit {
     if(c) {
       let bookingId = this.bookingId;
       this.__ms.postData(this.__ms.backEndUrl+"HotelQuery/cancelHotelReservation", {bookingId}).subscribe(res => {
-        window.scroll(0, 0);
+        // window.scroll(0, 0);
         this.bookingDetails = res;
       });
     }
@@ -57,27 +58,29 @@ export class HotelVoucherComponent implements OnInit {
   //   });  
   // } 
   printVoucher(divId){    
-    let printContents, popupWin;
-    printContents = document.getElementById(divId).innerHTML;
-    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    popupWin.document.open();
-    popupWin.document.write(`
-      <html>
-        <head>
-          <title>Hotel Reservation - Rehman Travels</title>
-          <style>.table-bordered {border: 1px solid #dee2e6;}
-          .table-bordered td, .table-bordered th {border: 1px solid #dee2e6;}
-          .table td, .table th {padding: .75rem;vertical-align: top;border-top: 1px solid #dee2e6;}
-          .no-print{display:none;}
-          @media print {
+    if(isPlatformBrowser(this.platformId)){
+      let printContents, popupWin;
+      printContents = document.getElementById(divId).innerHTML;
+      popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+      popupWin.document.open();
+      popupWin.document.write(`
+        <html>
+          <head>
+            <title>Hotel Reservation - Rehman Travels</title>
+            <style>.table-bordered {border: 1px solid #dee2e6;}
+            .table-bordered td, .table-bordered th {border: 1px solid #dee2e6;}
+            .table td, .table th {padding: .75rem;vertical-align: top;border-top: 1px solid #dee2e6;}
             .no-print{display:none;}
-          }
-          </style>
-        </head>
-        <body onload="window.print();window.close()">${printContents}</body>
-      </html>`
-    );
-    popupWin.document.close();
+            @media print {
+              .no-print{display:none;}
+            }
+            </style>
+          </head>
+          <body onload="window.print();window.close()">${printContents}</body>
+        </html>`
+      );
+      popupWin.document.close();
+    }
 
   }
 
